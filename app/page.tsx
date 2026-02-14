@@ -373,48 +373,41 @@ export default function Page() {
         </div>
 
         {result && (
-          <div className="grid-main" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
-          <div className="grid-bottom" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16, marginTop: 16 }}>
-            <Card title="Change Log">
-              <pre
-                style={{
-                  whiteSpace: "pre-wrap",
-                  margin: 0,
-                  fontSize: 13,
-                  lineHeight: 1.45,
-                  background: "rgba(0,0,0,0.22)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  borderRadius: 12,
-                  padding: 12,
-                  maxHeight: 340,
-                  overflow: "auto",
-                }}
-              >
-                {JSON.stringify(result.change_log, null, 2)}
-              </pre>
-            </Card>
+  <div className="grid-main" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
+    <div className="grid-bottom" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16, marginTop: 16 }}>
+      <Card title="Change Log">
+        <pre style={{
+          whiteSpace: "pre-wrap",
+          margin: 0,
+          fontSize: 13,
+          lineHeight: 1.45,
+          background: "rgba(0,0,0,0.22)",
+          border: "1px solid rgba(255,255,255,0.10)",
+          borderRadius: 12,
+          padding: 12,
+          maxHeight: 340,
+          overflow: "auto",
+        }}>
+          {JSON.stringify(result.change_log, null, 2)}
+        </pre>
+      </Card>
 
-            <Card title="Tailored Resume Preview">
-              <pre
-                style={{
-                  whiteSpace: "pre-wrap",
-                  margin: 0,
-                  fontSize: 13,
-                  lineHeight: 1.45,
-                  background: "rgba(0,0,0,0.22)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  borderRadius: 12,
-                  padding: 12,
-                  maxHeight: 340,
-                  overflow: "auto",
-                }}
-              >
-                {result.tailored_text}
-              </pre>
-            </Card>
-          </div>
-        )}
-      </div>
-    </main>
-  );
-}
+      <Card title="Tailored Resume Preview">
+        <pre style={{
+          whiteSpace: "pre-wrap",
+          margin: 0,
+          fontSize: 13,
+          lineHeight: 1.45,
+          background: "rgba(0,0,0,0.22)",
+          border: "1px solid rgba(255,255,255,0.10)",
+          borderRadius: 12,
+          padding: 12,
+          maxHeight: 340,
+          overflow: "auto",
+        }}>
+          {result.tailored_text}
+        </pre>
+      </Card>
+    </div>
+  </div>
+)}
