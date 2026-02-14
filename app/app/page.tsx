@@ -245,32 +245,71 @@ export default function Page() {
           )}
 
           {downloadUrl && (
-  <div style={{ marginTop: 14, padding: 12, borderRadius: 12 }}>
-    <b>Download:</b>{" "}
+  <div
+    style={{
+      marginTop: 14,
+      padding: 12,
+      borderRadius: 12,
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(0,0,0,0.25)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+      flexWrap: "wrap",
+    }}
+  >
+    <div>
+      <b>Download:</b>{" "}
+      <a
+        href={downloadUrl}
+        target="_blank"
+        rel="noreferrer"
+        style={{ color: "white", textDecoration: "underline" }}
+      >
+        tailored_resume.docx
+      </a>
+      <div style={{ fontSize: 12, opacity: 0.75, marginTop: 4 }}>
+        If clicking doesn’t download, use “Force download”.
+      </div>
+    </div>
+
     <button
       onClick={async () => {
-        const res = await fetch(downloadUrl);
-        const blob = await res.blob();
-        const url = window.URL.createObjectURL(blob);
+        try {
+          const res = await fetch(downloadUrl, { method: "GET" });
+          if (!res.ok) throw new Error(`Download failed: ${res.status}`);
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "tailored_resume.docx";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
+          const blob = await res.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = "tailored_resume.docx";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          window.URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+          console.error(err);
+          window.open(downloadUrl, "_blank", "noopener,noreferrer");
+          alert(
+            "Force download failed in-browser. I opened the file in a new tab instead (check console for details)."
+          );
+        }
       }}
       style={{
-        background: "transparent",
+        padding: "10px 14px",
+        borderRadius: 12,
+        border: "1px solid rgba(255,255,255,0.16)",
+        background: "rgba(99,102,241,0.28)",
         color: "white",
-        textDecoration: "underline",
-        border: "none",
         cursor: "pointer",
-        padding: 0,
+        fontWeight: 600,
       }}
     >
-      tailored_resume.docx
+      Force download
     </button>
   </div>
 )}
