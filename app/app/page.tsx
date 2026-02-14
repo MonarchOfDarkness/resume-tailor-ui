@@ -255,7 +255,7 @@ export default function Page() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
             gap: 16,
           }}
         >
