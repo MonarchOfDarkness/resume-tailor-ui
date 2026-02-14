@@ -373,7 +373,8 @@ export default function Page() {
         </div>
 
         {result && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
+          <div className="grid-main" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
+          <div className="grid-bottom" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16, marginTop: 16 }}>
             <Card title="Change Log">
               <pre
                 style={{
