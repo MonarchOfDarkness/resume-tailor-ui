@@ -59,18 +59,20 @@ export default function Page() {
   }
 
   async function tailor(resume_id: string): Promise<TailorResult> {
-    if (!baseUrl) throw new Error("Missing NEXT_PUBLIC_BACKEND_URL in .env.local");
+  if (!baseUrl) throw new Error("Missing NEXT_PUBLIC_BACKEND_URL in .env.local");
 
-    const payload: {
-      resume_id: string;
-      jd_url?: string;
-      jd_text?: string;
-      company_url?: string;
-    } = { resume_id };
+  const isHttp = (s: string) => /^https?:\/\//i.test(s.trim()); 
 
-    if (jdUrl.trim()) payload.jd_url = jdUrl.trim();
-    if (jdText.trim()) payload.jd_text = jdText.trim();
-    if (companyUrl.trim()) payload.company_url = companyUrl.trim();
+  const payload: {
+    resume_id: string;
+    jd_url?: string;
+    jd_text?: string;
+    company_url?: string;
+  } = { resume_id };
+
+  if (jdUrl.trim() && isHttp(jdUrl)) payload.jd_url = jdUrl.trim();
+  if (jdText.trim()) payload.jd_text = jdText.trim();
+  if (companyUrl.trim() && isHttp(companyUrl)) payload.company_url = companyUrl.trim();
 
     const r = await fetch(`${baseUrl}/tailor`, {
       method: "POST",
