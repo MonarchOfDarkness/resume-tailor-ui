@@ -1,3 +1,107 @@
+type IconName = "upload" | "target" | "chart" | "mobile" | "spark" | "scan" | "download" | "check";
+
+function Glyph({ name, size = 18 }: { name: IconName; size?: number }) {
+  const common: React.CSSProperties = {
+    width: size,
+    height: size,
+    display: "block",
+  };
+
+  if (name === "upload") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+        <path d="M12 16V5" />
+        <path d="m7.5 9.5 4.5-4.5 4.5 4.5" />
+        <path d="M5 19h14" />
+      </svg>
+    );
+  }
+  if (name === "target") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+        <circle cx="12" cy="12" r="7" />
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 2v3" />
+        <path d="M12 19v3" />
+        <path d="M2 12h3" />
+        <path d="M19 12h3" />
+      </svg>
+    );
+  }
+  if (name === "chart") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+        <path d="M4 19h16" />
+        <path d="M7 16v-4" />
+        <path d="M12 16V8" />
+        <path d="M17 16V5" />
+      </svg>
+    );
+  }
+  if (name === "mobile") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+        <rect x="7" y="2.5" width="10" height="19" rx="2.5" />
+        <path d="M10 5.5h4" />
+        <path d="M11 18.5h2" />
+      </svg>
+    );
+  }
+  if (name === "spark") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+        <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" />
+      </svg>
+    );
+  }
+  if (name === "scan") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+        <path d="M4 8V5a1 1 0 0 1 1-1h3" />
+        <path d="M16 4h3a1 1 0 0 1 1 1v3" />
+        <path d="M20 16v3a1 1 0 0 1-1 1h-3" />
+        <path d="M8 20H5a1 1 0 0 1-1-1v-3" />
+        <path d="M7 12h10" />
+      </svg>
+    );
+  }
+  if (name === "download") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+        <path d="M12 5v11" />
+        <path d="m7.5 12 4.5 4.5 4.5-4.5" />
+        <path d="M5 19h14" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+      <path d="m5 12 4 4L19 6" />
+    </svg>
+  );
+}
+
+function IconBadge({ name }: { name: IconName }) {
+  return (
+    <div
+      style={{
+        width: 40,
+        height: 40,
+        borderRadius: 14,
+        marginBottom: 14,
+        display: "grid",
+        placeItems: "center",
+        color: "rgba(255,255,255,0.96)",
+        background: "linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06))",
+        border: "1px solid rgba(255,255,255,0.12)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
+      }}
+    >
+      <Glyph name={name} />
+    </div>
+  );
+}
+
 export default function Landing() {
   return (
     <main
@@ -129,10 +233,10 @@ export default function Landing() {
                 gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
               }}
             >
-              <PreviewCard title="Resume upload" text="Drop in a .docx resume and start the workflow in seconds." />
-              <PreviewCard title="Role targeting" text="Use a JD URL or paste the description for more direct tailoring." />
-              <PreviewCard title="Fit insights" text="Review matched keywords, missing terms, and score signals." />
-              <PreviewCard title="Mobile-ready" text="A responsive layout that feels much cleaner on smaller screens." />
+              <PreviewCard icon="upload" title="Resume upload" text="Drop in a .docx resume and start the workflow in seconds." />
+              <PreviewCard icon="target" title="Role targeting" text="Use a JD URL or paste the description for more direct tailoring." />
+              <PreviewCard icon="chart" title="Fit insights" text="Review matched keywords, missing terms, and score signals." />
+              <PreviewCard icon="mobile" title="Mobile-ready" text="A responsive layout that feels much cleaner on smaller screens." />
             </div>
           </div>
         </section>
@@ -273,7 +377,7 @@ function Stat({ value, label }: { value: string; label: string }) {
   );
 }
 
-function PreviewCard({ title, text }: { title: string; text: string }) {
+function PreviewCard({ icon, title, text }: { icon: IconName; title: string; text: string }) {
   return (
     <div
       style={{
@@ -285,7 +389,7 @@ function PreviewCard({ title, text }: { title: string; text: string }) {
         boxShadow: "0 20px 50px rgba(0,0,0,0.18)",
       }}
     >
-      <div style={{ width: 42, height: 42, borderRadius: 14, background: "rgba(255,255,255,0.08)", marginBottom: 14 }} />
+      <IconBadge name={icon} />
       <h3 style={{ margin: "0 0 10px", fontSize: 18 }}>{title}</h3>
       <p style={{ opacity: 0.76, lineHeight: 1.65, margin: 0 }}>{text}</p>
     </div>
