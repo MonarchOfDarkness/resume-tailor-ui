@@ -1,8 +1,8 @@
-# Resume Tailor UI
+# RoleForge AI UI
 
-A modern Next.js frontend for an AI-powered resume tailoring workflow.
+A modern Next.js frontend for an agentic application workflow.
 
-This app is designed to help users upload a resume, target a role with a job description or job URL, review fit insights, and export a tailored version in a cleaner, more polished interface.
+This app is designed to help users upload a resume, target a role with a job description or job URL, review fit insights, generate application materials, and export a tailored version in a cleaner, more polished interface.
 
 ## Features
 
@@ -10,6 +10,7 @@ This app is designed to help users upload a resume, target a role with a job des
 - Job description / role targeting input
 - Fit insights and scoring UI
 - ATS-oriented review sections
+- Cover letter and interview prep views
 - Export-ready workflow
 - Responsive layout optimized for desktop and mobile
 - Clean SaaS-style landing page and dashboard experience
@@ -75,7 +76,7 @@ This project is set up well for Vercel deployment.
 
 ## Backend Connection
 
-This repository is the frontend/UI portion of the Resume Tailor project.
+This repository is the frontend/UI portion of the RoleForge AI project.
 
 If you are using a separate backend, configure the frontend environment variable as needed:
 

@@ -66,11 +66,11 @@ function Icon({ name }: { name: IconName }) {
 
 function Brand() {
   return (
-    <Link className="brand" href="/" aria-label="Resume Tailor home">
-      <span className="brand-mark">RT</span>
+    <Link className="brand" href="/" aria-label="RoleForge AI home">
+      <span className="brand-mark">RF</span>
       <span>
-        <span className="brand-name">Resume Tailor</span>
-        <span className="brand-kicker">AI application workbench</span>
+        <span className="brand-name">RoleForge AI</span>
+        <span className="brand-kicker">Agentic application workbench</span>
       </span>
     </Link>
   );
@@ -133,9 +133,9 @@ export default function Landing() {
           <span className="eyebrow">
             <Icon name="spark" /> Built for focused applications
           </span>
-          <h1 className="headline">Turn one resume into a sharper role match.</h1>
+          <h1 className="headline">RoleForge AI turns one resume into a sharper role match.</h1>
           <p className="subhead">
-            A cleaner AI workspace for uploading a resume, targeting a job description, checking ATS signals, and exporting a tailored document without losing the professional feel.
+            An agentic workspace for uploading a resume, targeting a job description, checking ATS signals, generating application materials, and exporting a tailored document without losing the professional feel.
           </p>
 
           <div className="hero-actions">
@@ -154,7 +154,7 @@ export default function Landing() {
           </div>
         </div>
 
-        <div className="resume-stage" aria-label="Resume Tailor product preview">
+        <div className="resume-stage" aria-label="RoleForge AI product preview">
           <div className="paper-stack">
             <div className="paper-shadow" />
             <div className="paper-shadow" />
@@ -198,8 +198,8 @@ export default function Landing() {
           </div>
 
           <div className="floating-note">
-            <strong>Live review stack</strong>
-            <span>Upload, target, scan, and export now feel like one guided desk instead of a static form.</span>
+            <strong>RoleForge review stack</strong>
+            <span>Upload, target, scan, generate, and export now feel like one guided agent workflow.</span>
           </div>
         </div>
       </section>
@@ -209,10 +209,10 @@ export default function Landing() {
           <div className="section-head">
             <div>
               <span className="eyebrow">Workflow</span>
-              <h2>Built around the actual resume tailoring job.</h2>
+              <h2>Built around the real application workflow.</h2>
             </div>
             <p>
-              Each step makes the next action obvious while keeping the resume itself in view, so the interface feels more like a professional editing studio.
+              Each step keeps the resume, role target, ATS review, cover letter, and interview prep connected, so RoleForge AI feels like an application desk instead of a static editor.
             </p>
           </div>
 
@@ -229,9 +229,9 @@ export default function Landing() {
         <div className="band-inner">
           <div className="cta-strip">
             <div>
-              <span className="eyebrow">Resume theme</span>
-              <h2>Professional enough for job hunting, interactive enough to feel modern.</h2>
-              <p>The redesign keeps the app credible while adding motion, readiness feedback, tabs, drag-and-drop affordances, and a paper-like preview.</p>
+              <span className="eyebrow">RoleForge AI</span>
+              <h2>Professional enough for job hunting, agentic enough to do the heavy lift.</h2>
+              <p>The product now frames resume tailoring, ATS review, cover-letter drafting, and interview prep as one coordinated role-readiness workflow.</p>
             </div>
             <a className="primary-button" href="/app">
               Open the studio <Icon name="arrow" />

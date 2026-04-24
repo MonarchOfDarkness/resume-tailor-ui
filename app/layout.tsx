@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Resume Tailor",
-  description: "AI-powered resume optimization for ATS and job matching.",
+  title: "RoleForge AI",
+  description: "Agentic resume, ATS, cover letter, and interview prep workflow.",
 };
 
 

@@ -424,11 +424,11 @@ export default function Page() {
     <main className="page-shell">
       <div className="app-shell">
         <header className="app-topbar">
-          <Link className="brand" href="/" aria-label="Resume Tailor home">
-            <span className="brand-mark">RT</span>
+          <Link className="brand" href="/" aria-label="RoleForge AI home">
+            <span className="brand-mark">RF</span>
             <span>
-              <span className="brand-name">Resume Tailor Studio</span>
-              <span className="brand-kicker">Document-first AI workflow</span>
+              <span className="brand-name">RoleForge AI</span>
+              <span className="brand-kicker">Agentic application workflow</span>
             </span>
           </Link>
 
@@ -605,7 +605,7 @@ export default function Page() {
                 ) : null}
 
                 <button className="primary-button" type="button" onClick={onRun} disabled={!canRun}>
-                  {busy ? "Agent is tailoring..." : "Run tailor + export"} <Icon name="spark" />
+                  {busy ? "RoleForge is working..." : "Run RoleForge + export"} <Icon name="spark" />
                 </button>
 
                 {!canRun ? (
@@ -932,7 +932,7 @@ export default function Page() {
                   <span className="status-pill">{file ? file.name : "No resume selected"}</span>
                 </div>
                 <div className="doc-body">
-                  <div className="doc-title">Tailored Resume</div>
+                  <div className="doc-title">RoleForge Draft</div>
                   <div className="doc-subtitle">{hasTarget ? "Role target loaded" : "Add a role target to start shaping the draft"}</div>
                   <div className="doc-rule" />
                   <div className="doc-section">
