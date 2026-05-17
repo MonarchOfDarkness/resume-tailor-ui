@@ -5003,6 +5003,72 @@ html[data-theme="dark"] input::file-selector-button {
   width: fit-content;
 }
 
+.settings-billing-panel {
+  align-content: start;
+}
+
+.settings-billing-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.settings-price-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.settings-price-card {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.settings-price-card.featured {
+  border-color: rgba(154, 102, 42, 0.36);
+  background: linear-gradient(180deg, rgba(222, 162, 79, 0.2), rgba(255, 255, 255, 0.54));
+}
+
+.settings-price-kicker {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink-3);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.settings-price-card strong {
+  display: inline-block;
+  color: var(--ink-0);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 0.9;
+}
+
+.settings-price-card small {
+  margin-left: 6px;
+  color: var(--ink-2);
+  font-weight: 850;
+}
+
+.settings-price-card form,
+.settings-price-card button {
+  width: 100%;
+}
+
+.settings-billing-note {
+  margin: 0;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
 .rf-studio-stat-label {
   color: var(--ink-3);
   font-size: 0.72rem;
@@ -7426,6 +7492,18 @@ html[data-theme="dark"] .settings-section {
   border-color: rgba(255, 247, 233, 0.18);
 }
 
+html[data-theme="dark"] .settings-price-card {
+  background: rgba(255, 247, 233, 0.055);
+  border-color: rgba(255, 247, 233, 0.16);
+}
+
+html[data-theme="dark"] .settings-price-card.featured {
+  background:
+    linear-gradient(180deg, rgba(222, 162, 79, 0.14), rgba(255, 247, 233, 0.04)),
+    rgba(15, 20, 35, 0.78);
+  border-color: rgba(222, 162, 79, 0.34);
+}
+
 html[data-theme="dark"] .settings-page-nav a {
   color: var(--ink-2);
 }
@@ -7691,7 +7769,8 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
   }
 
   .settings-grid,
-  .settings-metric-row {
+  .settings-metric-row,
+  .settings-price-grid {
     grid-template-columns: 1fr;
   }
 
@@ -7700,7 +7779,8 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
   }
 
   .settings-action-row,
-  .settings-export-item {
+  .settings-export-item,
+  .settings-billing-head {
     align-items: stretch;
     flex-direction: column;
   }
@@ -7711,6 +7791,7 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
 
   .settings-download-button,
   .settings-coming-soon,
+  .settings-billing-head .ghost-button,
   .settings-action-row .btn,
   .settings-action-row .ghost-button,
   .settings-action-row .studio-oauth-button {

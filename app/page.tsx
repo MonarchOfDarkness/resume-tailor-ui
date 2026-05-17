@@ -392,14 +392,14 @@ function Pricing() {
         <div className="section-head">
           <div>
             <div className="eyebrow">Pricing</div>
-            <h2 className="display h2">Launch with honest plan states.</h2>
+            <h2 className="display h2">Start lean, upgrade when you need exports.</h2>
           </div>
-          <p className="lede">Billing stays clearly marked as coming soon until real plan and account support are ready.</p>
+          <p className="lede">Free covers the core PDF workflow. Premium is intentionally priced lower while RoleForge is early.</p>
         </div>
         <div className="pricing-grid two">
           <article className="price-card">
             <div className="price-name">Studio</div>
-            <div className="price-amount"><span className="v">Available</span></div>
+            <div className="price-amount"><span className="v">$0</span></div>
             <div className="price-desc">Use the current resume tailoring workflow for upload, targeting, review, and export.</div>
             <ul className="price-list">
               <li><RoleForgeIcon name="check" size={14} />DOCX, PDF, and TXT upload</li>
@@ -411,14 +411,14 @@ function Pricing() {
           </article>
           <article className="price-card featured">
             <div className="price-name">Premium</div>
-            <div className="price-amount"><span className="v">Coming soon</span></div>
-            <div className="price-desc">Sign-in and saved projects are available. Premium options are planned but not live yet.</div>
+            <div className="price-amount"><span className="v">$9</span><span className="m">/mo</span></div>
+            <div className="price-desc">$72/year for early users. Premium unlocks account entitlements as the export stack comes online.</div>
             <ul className="price-list">
-              <li><RoleForgeIcon name="check" size={14} />Email sign-in available</li>
-              <li><RoleForgeIcon name="lock" size={14} />Premium billing coming soon</li>
-              <li><RoleForgeIcon name="check" size={14} />Saved project sync available</li>
+              <li><RoleForgeIcon name="check" size={14} />Saved project sync</li>
+              <li><RoleForgeIcon name="lock" size={14} />DOCX and TXT export entitlement</li>
+              <li><RoleForgeIcon name="lock" size={14} />Premium template access when released</li>
             </ul>
-            <button className="btn btn-brand btn-lg" type="button" disabled>Premium not live</button>
+            <Link className="btn btn-brand btn-lg" href="/settings#billing">View premium</Link>
           </article>
         </div>
       </div>
@@ -430,10 +430,10 @@ function FAQ() {
   const items = [
     ["Does RoleForge replace my judgment?", "No. The app surfaces generated guidance and exports a draft for your review."],
     ["Can I use a job posting URL?", "Yes, if the posting is public and RoleForge can access it. Pasted text is the most reliable target input."],
-    ["What file formats can I export?", "The current free workflow exports PDF. DOCX and TXT exports should stay hidden or locked until premium billing is real."],
+    ["What file formats can I export?", "The current free workflow exports PDF. DOCX and TXT are premium entitlement formats and remain locked unless billing confirms access."],
     ["Can I use templates?", "Templates are visual examples for now. A selectable template library needs product rules before launch."],
-    ["Is sign-in available?", "Yes. Google and email magic-link sign-in are available. Saved projects can sync after sign-in; account settings and billing still need product rules."],
-    ["Is premium billing live?", "No. Premium areas are intentionally marked as coming soon until real payment configuration exists."],
+    ["Is sign-in available?", "Yes. Google and email magic-link sign-in are available. Saved projects sync after sign-in."],
+    ["How much is Premium?", "The launch price is $9/month or $72/year. Checkout is handled by Stripe when billing is configured for the deployment."],
   ] as const;
 
   return (

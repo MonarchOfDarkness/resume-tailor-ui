@@ -1,6 +1,6 @@
 # RoleForge AI Pre-Payment Plan Rules
 
-These rules keep the app honest before Stripe is enabled.
+These rules keep the app honest as Stripe billing is connected.
 
 ## Free plan
 
@@ -8,10 +8,15 @@ These rules keep the app honest before Stripe is enabled.
 - Resume upload, job target input, AI tailoring, review tabs, saved project sync, restore, and PDF export stay available.
 - Saved projects are tied to the signed-in Supabase account.
 
-## Premium placeholder
+## Premium
 
-- DOCX and TXT exports remain locked until billing and exporter support are real.
-- Premium templates, higher limits, customer portal, and billing controls remain disabled until Stripe products, prices, webhooks, and entitlement updates are configured.
+- Launch price is `$9/month` or `$72/year` for early users.
+- Stripe test-mode product: `prod_UX0qgAJCKf6dwt`.
+- Stripe test-mode prices:
+  - Monthly: `price_1TXwpIRpyJeACd6qTXDo2gyr`
+  - Yearly: `price_1TXwpJRpyJeACd6qp7hWyWIJ`
+- DOCX and TXT exports remain locked unless Stripe confirms a subscription and the entitlement row is premium active/trialing.
+- Premium templates and higher limits remain disabled until their product rules and implementation are real.
 - The UI may show the current plan state, but must not claim an active paid subscription unless `account_entitlements.plan = 'premium'` and billing state is active/trialing.
 
 ## Entitlement source
@@ -19,4 +24,12 @@ These rules keep the app honest before Stripe is enabled.
 - `public.account_entitlements` is the account-level source of truth.
 - Authenticated users can read only their own entitlement row.
 - Users cannot insert or update entitlement rows from the client.
-- Future Stripe webhook handlers should update this table with server-side credentials only.
+- Stripe webhook handlers update this table with server-side credentials only.
+
+## Billing environment
+
+- `STRIPE_SECRET_KEY`: server-only Stripe key.
+- `STRIPE_WEBHOOK_SECRET`: signing secret for `/api/billing/webhook`.
+- `STRIPE_PREMIUM_MONTHLY_PRICE_ID`: monthly recurring Price ID.
+- `STRIPE_PREMIUM_YEARLY_PRICE_ID`: yearly recurring Price ID.
+- `SUPABASE_SERVICE_ROLE_KEY`: server-only key used by checkout and webhook routes to write entitlement rows.

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Brand } from "../components/Brand";
 import { RoleForgeIcon } from "../components/RoleForgeIcons";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { getStripeBillingConfig, PREMIUM_PRICE } from "../lib/billing/stripe";
 import { loadAccountEntitlement } from "../lib/entitlements";
 import { createRoleForgeServerClient } from "../lib/supabase/server";
 
@@ -37,6 +38,9 @@ export default async function SettingsPage() {
     countRows(supabase, "tailor_runs"),
   ]);
   const entitlement = await loadAccountEntitlement(supabase, user.id);
+  const billingConfig = getStripeBillingConfig();
+  const billingReady = billingConfig.checkoutConfigured && Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim());
+  const premiumActive = entitlement.plan === "premium" && ["active", "trialing"].includes(entitlement.billingStatus);
   const planLabel = entitlement.plan === "premium" ? "Premium" : "Free";
   const billingLabel =
     entitlement.billingStatus === "none"
@@ -132,7 +136,7 @@ export default async function SettingsPage() {
           <section className="settings-section" id="exports">
             <div className="settings-section-copy">
               <h2>Exports</h2>
-              <p>PDF export is available now. Other formats stay locked until premium is real.</p>
+              <p>PDF export is available now. DOCX and TXT unlock only when premium entitlement is active.</p>
             </div>
             <div className="settings-section-panel settings-export-list">
               <div className="settings-export-item enabled">
@@ -141,11 +145,11 @@ export default async function SettingsPage() {
               </div>
               <div className="settings-export-item disabled">
                 <span><RoleForgeIcon name="lock" size={14} />DOCX</span>
-                <small>{entitlement.exportFormats.docx ? "Entitled, pending exporter" : "Coming soon"}</small>
+                <small>{entitlement.exportFormats.docx ? "Premium entitlement active" : "Premium"}</small>
               </div>
               <div className="settings-export-item disabled">
                 <span><RoleForgeIcon name="lock" size={14} />TXT</span>
-                <small>{entitlement.exportFormats.txt ? "Entitled, pending exporter" : "Coming soon"}</small>
+                <small>{entitlement.exportFormats.txt ? "Premium entitlement active" : "Premium"}</small>
               </div>
             </div>
           </section>
@@ -153,11 +157,50 @@ export default async function SettingsPage() {
           <section className="settings-section" id="billing">
             <div className="settings-section-copy">
               <h2>Billing</h2>
-              <p>No paid plan is active. Billing controls will appear only after pricing and Stripe entitlements are ready.</p>
+              <p>Premium is priced for early users at ${PREMIUM_PRICE.monthly / 100}/month or ${PREMIUM_PRICE.yearly / 100}/year.</p>
             </div>
-            <div className="settings-section-panel">
-              <span className="settings-status-pill muted">{billingLabel}</span>
-              <button className="primary-button settings-coming-soon" type="button" disabled>Coming soon</button>
+            <div className="settings-section-panel settings-billing-panel">
+              <div className="settings-billing-head">
+                <span className={`settings-status-pill ${premiumActive ? "good" : "muted"}`}>{billingLabel}</span>
+                <form action="/api/billing/portal" method="post">
+                  <button className="ghost-button" type="submit" disabled={!billingReady || entitlement.billingStatus === "none"}>
+                    Manage billing
+                  </button>
+                </form>
+              </div>
+              <div className="settings-price-grid">
+                <article className="settings-price-card">
+                  <div>
+                    <span className="settings-price-kicker">Monthly</span>
+                    <strong>${PREMIUM_PRICE.monthly / 100}</strong>
+                    <small>per month</small>
+                  </div>
+                  <form action="/api/billing/checkout" method="post">
+                    <input type="hidden" name="interval" value="month" />
+                    <button className="primary-button" type="submit" disabled={!billingReady || premiumActive}>
+                      {premiumActive ? "Current plan" : "Start monthly"}
+                    </button>
+                  </form>
+                </article>
+                <article className="settings-price-card featured">
+                  <div>
+                    <span className="settings-price-kicker">Yearly</span>
+                    <strong>${PREMIUM_PRICE.yearly / 100}</strong>
+                    <small>per year</small>
+                  </div>
+                  <form action="/api/billing/checkout" method="post">
+                    <input type="hidden" name="interval" value="year" />
+                    <button className="primary-button" type="submit" disabled={!billingReady || premiumActive}>
+                      {premiumActive ? "Current plan" : "Start yearly"}
+                    </button>
+                  </form>
+                </article>
+              </div>
+              <p className="settings-billing-note">
+                {billingReady
+                  ? "Checkout opens in Stripe. Premium access updates after Stripe confirms the subscription."
+                  : "Checkout is disabled until the Stripe and Supabase service environment variables are configured."}
+              </p>
             </div>
           </section>
         </section>

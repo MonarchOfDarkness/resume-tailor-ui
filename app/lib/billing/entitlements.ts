@@ -1,0 +1,91 @@
+import type Stripe from "stripe";
+
+import { createRoleForgeServiceClient } from "../supabase/service";
+
+type BillingStatus = "none" | "trialing" | "active" | "past_due" | "canceled" | "incomplete";
+
+type EntitlementPatch = {
+  userId: string;
+  plan: "free" | "premium";
+  billingStatus: BillingStatus;
+  stripeCustomerId?: string | null;
+  stripeSubscriptionId?: string | null;
+  currentPeriodEnd?: string | null;
+};
+
+const PREMIUM_FEATURES = {
+  export_pdf: true,
+  export_docx: true,
+  export_txt: true,
+  project_storage: true,
+};
+
+const FREE_FEATURES = {
+  export_pdf: true,
+  export_docx: false,
+  export_txt: false,
+  project_storage: true,
+};
+
+function normalizeBillingStatus(status?: Stripe.Subscription.Status | null): BillingStatus {
+  if (status === "active" || status === "trialing" || status === "past_due" || status === "canceled" || status === "incomplete") {
+    return status;
+  }
+
+  return "none";
+}
+
+function currentPeriodEnd(subscription: Stripe.Subscription) {
+  const legacyPeriodEnd = (subscription as unknown as { current_period_end?: number }).current_period_end;
+  const itemPeriodEnd = subscription.items.data[0]?.current_period_end;
+  const periodEnd = legacyPeriodEnd ?? itemPeriodEnd ?? null;
+
+  return periodEnd ? new Date(periodEnd * 1000).toISOString() : null;
+}
+
+export async function upsertEntitlement(patch: EntitlementPatch) {
+  const supabase = createRoleForgeServiceClient();
+
+  if (!supabase) {
+    throw new Error("Supabase service role is not configured for billing entitlement updates.");
+  }
+
+  const premiumActive = patch.plan === "premium" && ["active", "trialing"].includes(patch.billingStatus);
+
+  const { error } = await supabase
+    .from("account_entitlements")
+    .upsert({
+      user_id: patch.userId,
+      plan: premiumActive ? "premium" : "free",
+      billing_status: patch.billingStatus,
+      stripe_customer_id: patch.stripeCustomerId ?? null,
+      stripe_subscription_id: patch.stripeSubscriptionId ?? null,
+      current_period_end: patch.currentPeriodEnd ?? null,
+      features: premiumActive ? PREMIUM_FEATURES : FREE_FEATURES,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "user_id" });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function syncSubscriptionEntitlement(subscription: Stripe.Subscription) {
+  const supabaseUserId = subscription.metadata.supabase_user_id;
+  const customerId = typeof subscription.customer === "string" ? subscription.customer : subscription.customer.id;
+
+  if (!supabaseUserId) {
+    throw new Error(`Subscription ${subscription.id} is missing supabase_user_id metadata.`);
+  }
+
+  const billingStatus = normalizeBillingStatus(subscription.status);
+
+  await upsertEntitlement({
+    userId: supabaseUserId,
+    plan: ["active", "trialing"].includes(billingStatus) ? "premium" : "free",
+    billingStatus,
+    stripeCustomerId: customerId,
+    stripeSubscriptionId: subscription.id,
+    currentPeriodEnd: currentPeriodEnd(subscription),
+  });
+}
