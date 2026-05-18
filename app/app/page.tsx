@@ -982,6 +982,23 @@ function historyGroupSummary(group: HistoryGroup) {
   return `${runLabel} · best ${group.bestScore}/100 · ${restoreLabel}`;
 }
 
+function historyVersionLabel(total: number, index: number) {
+  if (total <= 1) return "Latest run";
+  const versionNumber = Math.max(total - index, 1);
+  return index === 0 ? `Version ${versionNumber} · Latest` : `Version ${versionNumber}`;
+}
+
+function formatHistoryTimestamp(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Recent run";
+  return date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 function groupHistoryItems(items: HistoryItem[], syncedIds: string[] = []): HistoryGroup[] {
   const groups = new Map<string, HistoryItem[]>();
 
@@ -2167,6 +2184,19 @@ export default function Page() {
           : "Complete a tailor run and it will stay in this browser with the preview, target, scores, and download ready to reopen.";
   const canDownloadHistoryItem = (entry: HistoryItem) =>
     Boolean(entry.downloadUrl && entry.downloadUrl !== "#" && exportFormatAllowed(entry.downloadFormat ?? "pdf", accountStatus?.entitlement));
+  const visibleRunCount = visibleHistoryGroups.reduce((total, group) => total + group.items.length, 0);
+  const visibleAccountProjectCount = visibleHistoryGroups.filter((group) => group.accountCount > 0).length;
+  const visibleRestoreReadyCount = visibleHistoryGroups.reduce((total, group) => total + group.restorableCount, 0);
+  const visibleDownloadReadyCount = visibleHistoryGroups.reduce(
+    (total, group) => total + group.items.filter(canDownloadHistoryItem).length,
+    0,
+  );
+  const selectedHistoryIndex = selectedHistoryGroup?.items.findIndex((entry) => entry.id === visibleSelectedHistoryItem?.id) ?? -1;
+  const selectedHistoryVersionLabel =
+    selectedHistoryGroup && selectedHistoryIndex >= 0
+      ? historyVersionLabel(selectedHistoryGroup.items.length, selectedHistoryIndex)
+      : "Latest run";
+  const selectedHistoryDownloadCount = selectedHistoryGroup?.items.filter(canDownloadHistoryItem).length ?? 0;
   const workspacePanelOpen = activeTab === "history";
 
   const suggestionCards: StudioSuggestion[] = result
@@ -2754,6 +2784,26 @@ export default function Page() {
                     <button className="btn btn-soft btn-sm" type="button" onClick={clearLocalHistory} disabled={signedIn ? !localHistoryCount : !history.length}>{clearHistoryLabel}</button>
                   </div>
                 </div>
+                {visibleHistoryGroups.length ? (
+                  <div className="history-overview" aria-label="Saved project overview">
+                    <div>
+                      <strong>{visibleRunCount}</strong>
+                      <span>{visibleRunCount === 1 ? "Run" : "Runs"}</span>
+                    </div>
+                    <div>
+                      <strong>{visibleAccountProjectCount}</strong>
+                      <span>Account projects</span>
+                    </div>
+                    <div>
+                      <strong>{visibleRestoreReadyCount}</strong>
+                      <span>Restore-ready</span>
+                    </div>
+                    <div>
+                      <strong>{visibleDownloadReadyCount}</strong>
+                      <span>Download-ready</span>
+                    </div>
+                  </div>
+                ) : null}
                 <div className="change-list panel-body">
                   {visibleHistoryGroups.length ? visibleHistoryGroups.map((group) => {
                     const entry = group.latest;
@@ -2765,6 +2815,7 @@ export default function Page() {
                     const actionBusy = group.items.some((item) => projectActionId === item.id);
                     const selected = group.items.some((item) => selectedHistoryId === item.id);
                     const active = group.items.some((item) => restoredHistoryId === item.id);
+                    const latestDownloadLabel = entry.downloadFormat?.toUpperCase() ?? "PDF";
                     return (
                       <article className={`history-item${active ? " active" : ""}${selected ? " selected" : ""}`} key={group.key}>
                         <div className="history-item-main">
@@ -2792,11 +2843,25 @@ export default function Page() {
                             <small className={`history-sync-badge ${group.restorableCount ? "restore" : "legacy"}`}>
                               {group.restorableCount ? "Restore ready" : "Download only"}
                             </small>
+                            {active ? <small className="history-sync-badge open">Open now</small> : null}
                           </div>
                           <p>{group.target}</p>
+                          <div className="history-project-facts" aria-label="Project facts">
+                            <span>
+                              <strong>{group.items.length}</strong>
+                              <small>{group.items.length === 1 ? "Version" : "Versions"}</small>
+                            </span>
+                            <span>
+                              <strong>{group.bestScore}/100</strong>
+                              <small>Best fit</small>
+                            </span>
+                            <span>
+                              <strong>{formatHistoryTimestamp(entry.createdAt)}</strong>
+                              <small>Latest run</small>
+                            </span>
+                          </div>
                           <div className="history-project-meta" aria-label="Project run summary">
                             <span>{historyGroupSummary(group)}</span>
-                            <span>Latest {new Date(entry.createdAt).toLocaleString()}</span>
                             <span>{entry.mode} mode</span>
                           </div>
                           {projectActionMessage && actionBusy ? <small className="history-action-note error">{projectActionMessage}</small> : null}
@@ -2828,9 +2893,9 @@ export default function Page() {
                             Restore <RoleForgeIcon name="edit" size={14} />
                           </button>
                           {canDownload ? (
-                            <a className="ghost-button" href={entry.downloadUrl} download>Download {entry.downloadFormat?.toUpperCase() ?? "PDF"} <RoleForgeIcon name="download" size={14} /></a>
+                            <a className="ghost-button" href={entry.downloadUrl} download>Download {latestDownloadLabel} <RoleForgeIcon name="download" size={14} /></a>
                           ) : (
-                            <button className="ghost-button" type="button" disabled>Download {entry.downloadFormat?.toUpperCase() ?? "PDF"} <RoleForgeIcon name="download" size={14} /></button>
+                            <button className="ghost-button" type="button" disabled>Download {latestDownloadLabel} <RoleForgeIcon name="download" size={14} /></button>
                           )}
                         </div>
                       </article>
@@ -2848,6 +2913,11 @@ export default function Page() {
                       <div className="eyebrow">Project detail</div>
                       <h3>{selectedHistoryGroup.title}</h3>
                       <p>{selectedHistoryGroup.target}</p>
+                      <div className="history-detail-badges" aria-label="Selected project state">
+                        <span>{historyStorageLabel(selectedHistoryGroup)}</span>
+                        <span>{selectedHistoryVersionLabel}</span>
+                        <span>{hasRestorableSnapshot(visibleSelectedHistoryItem) ? "Restores to studio" : "Download only"}</span>
+                      </div>
                     </div>
                     <dl>
                       <div>
@@ -2864,24 +2934,31 @@ export default function Page() {
                       </div>
                       <div>
                         <dt>Export</dt>
-                        <dd>{selectedHistoryGroup.downloadableCount ? `${selectedHistoryGroup.downloadableCount} ready` : "No download link"}</dd>
+                        <dd>{selectedHistoryDownloadCount ? `${selectedHistoryDownloadCount} ready` : "No download link"}</dd>
                       </div>
                     </dl>
+                    <div className="history-selected-run">
+                      <span>{selectedHistoryVersionLabel}</span>
+                      <strong>{formatHistoryTimestamp(visibleSelectedHistoryItem.createdAt)}</strong>
+                      <small>{visibleSelectedHistoryItem.score}/100 · {visibleSelectedHistoryItem.mode} · {historyStatusLabel(visibleSelectedHistoryItem, syncedHistoryIds)}</small>
+                    </div>
                     <div className="history-version-list" aria-label="Runs in this project">
-                      {selectedHistoryGroup.items.slice(0, 5).map((entry) => {
+                      {selectedHistoryGroup.items.slice(0, 5).map((entry, index) => {
                         const restorable = hasRestorableSnapshot(entry);
+                        const versionLabel = historyVersionLabel(selectedHistoryGroup.items.length, index);
+                        const downloadLabel = entry.downloadFormat?.toUpperCase() ?? "PDF";
                         return (
                           <article className={selectedHistoryId === entry.id ? "selected" : ""} key={`detail-${entry.id}`}>
                             <button type="button" onClick={() => setSelectedHistoryId(entry.id)} aria-pressed={selectedHistoryId === entry.id}>
-                              <strong>{new Date(entry.createdAt).toLocaleString()}</strong>
-                              <span>{entry.score}/100 · {entry.mode} · {historyStatusLabel(entry, syncedHistoryIds)}</span>
+                              <strong>{versionLabel}</strong>
+                              <span>{formatHistoryTimestamp(entry.createdAt)} · {entry.score}/100 · {entry.mode} · {historyStatusLabel(entry, syncedHistoryIds)}</span>
                             </button>
                             <div>
                               <button className="btn btn-soft btn-sm" type="button" onClick={() => restoreHistoryItem(entry)} disabled={!restorable}>Restore</button>
                               {canDownloadHistoryItem(entry) ? (
-                                <a className="btn btn-soft btn-sm" href={entry.downloadUrl} download>{entry.downloadFormat?.toUpperCase() ?? "PDF"}</a>
+                                <a className="btn btn-soft btn-sm" href={entry.downloadUrl} download>{downloadLabel}</a>
                               ) : (
-                                <button className="btn btn-soft btn-sm" type="button" disabled>{entry.downloadFormat?.toUpperCase() ?? "PDF"}</button>
+                                <button className="btn btn-soft btn-sm" type="button" disabled>{downloadLabel}</button>
                               )}
                             </div>
                           </article>
