@@ -1618,7 +1618,7 @@ export default function Page() {
     return url;
   }
 
-  async function syncCompletedRun(item: HistoryItem, output: TailorResult, url: string) {
+  async function syncCompletedRun(item: HistoryItem, output: TailorResult, url: string, options: { countUsage?: boolean } = {}) {
     if (!signedIn || !accountReady) {
       setHistorySyncState("local");
       setHistorySyncMessage(signedIn ? "Account sync is not ready yet. Local history still works." : "Sign in to sync completed runs");
@@ -1666,10 +1666,11 @@ export default function Page() {
         return next;
       });
       setHistorySyncState("synced");
-      setHistorySyncMessage("Saved to your account and ready to restore");
+      setHistorySyncMessage(options.countUsage === false ? `${item.downloadFormat?.toUpperCase() ?? "Export"} saved to this project` : "Saved to your account and ready to restore");
+      if (options.countUsage === false) return;
+
       setAccountStatus((current) => {
         if (!current?.usage) return current;
-
         const monthlyRuns = current.usage.monthlyRuns + 1;
         const remainingRuns =
           typeof current.usage.monthlyRunLimit === "number"
@@ -1690,6 +1691,35 @@ export default function Page() {
       setHistorySyncState("error");
       setHistorySyncMessage("Could not sync this run. It is still saved locally.");
     }
+  }
+
+  function updateCurrentHistoryExport(url: string, format: ExportFormat) {
+    const matchIds = new Set([restoredHistoryId, result?.run_id, resumeId].filter(Boolean) as string[]);
+    let updatedItem: HistoryItem | null = null;
+
+    const nextHistory = history.map((entry) => {
+      const snapshotRunId = entry.snapshot?.result?.run_id;
+      const matches =
+        matchIds.has(entry.id) ||
+        Boolean(entry.accountRunId && matchIds.has(entry.accountRunId)) ||
+        Boolean(snapshotRunId && matchIds.has(snapshotRunId));
+
+      if (!matches) return entry;
+
+      const nextSnapshot = entry.snapshot
+        ? { ...entry.snapshot, downloadUrl: url, downloadFormat: format }
+        : entry.snapshot;
+      const nextEntry = { ...entry, downloadUrl: url, downloadFormat: format, snapshot: nextSnapshot };
+      updatedItem = nextEntry;
+      return nextEntry;
+    });
+
+    if (updatedItem) {
+      setHistory(nextHistory);
+      saveHistory(nextHistory);
+    }
+
+    return updatedItem;
   }
 
   function buildRunSnapshot(output: TailorResult, uploadData: UploadResponse, url: string, format: ExportFormat = "pdf"): SavedRunSnapshot {
@@ -1856,7 +1886,7 @@ export default function Page() {
       const nextHistory = [item, ...history.filter((entry) => entry.id !== item.id)].slice(0, 12);
       setHistory(nextHistory);
       saveHistory(nextHistory);
-      void syncCompletedRun(item, output, url);
+      void syncCompletedRun(item, output, url, { countUsage: true });
       setStage("ready");
       setActiveTab("score");
       setPreviewMode("tailored");
@@ -1899,7 +1929,12 @@ export default function Page() {
     setStage("exporting");
 
     try {
-      await exportResume(result.tailored_text, selectedExportFormat);
+      const url = await exportResume(result.tailored_text, selectedExportFormat);
+      const updatedItem = updateCurrentHistoryExport(url, selectedExportFormat);
+      setCopyState(`${selectedExportFormat.toUpperCase()} export ready`);
+      if (updatedItem) {
+        void syncCompletedRun(updatedItem, result, url, { countUsage: false });
+      }
       setStage("ready");
     } catch (caught) {
       const nextError = workflowErrorFromCaught(caught, "Export failed");
@@ -2790,7 +2825,7 @@ export default function Page() {
                             <div>
                               <button className="btn btn-soft btn-sm" type="button" onClick={() => restoreHistoryItem(entry)} disabled={!restorable}>Restore</button>
                               {entry.downloadUrl && entry.downloadUrl !== "#" ? (
-                                <a className="btn btn-soft btn-sm" href={entry.downloadUrl} download>PDF</a>
+                                <a className="btn btn-soft btn-sm" href={entry.downloadUrl} download>{entry.downloadFormat?.toUpperCase() ?? "PDF"}</a>
                               ) : null}
                             </div>
                           </article>
@@ -2800,7 +2835,7 @@ export default function Page() {
                     <div className="history-detail-actions">
                       <button className="btn btn-soft btn-sm" type="button" onClick={() => restoreHistoryItem(visibleSelectedHistoryItem)} disabled={!hasRestorableSnapshot(visibleSelectedHistoryItem)}>Restore</button>
                       {visibleSelectedHistoryItem.downloadUrl && visibleSelectedHistoryItem.downloadUrl !== "#" ? (
-                        <a className="btn btn-soft btn-sm" href={visibleSelectedHistoryItem.downloadUrl} download>Download</a>
+                        <a className="btn btn-soft btn-sm" href={visibleSelectedHistoryItem.downloadUrl} download>Download {visibleSelectedHistoryItem.downloadFormat?.toUpperCase() ?? "PDF"}</a>
                       ) : null}
                     </div>
                   </aside>
