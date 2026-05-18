@@ -10,6 +10,12 @@ import { createRoleForgeServerClient } from "../lib/supabase/server";
 import { loadAccountUsage } from "../lib/usage";
 
 type CountResult = { count: number | null; error: unknown };
+type ExportRow = {
+  label: "PDF" | "DOCX" | "TXT";
+  enabled: boolean;
+  included: string;
+  locked: string;
+};
 
 async function countRows(
   supabase: NonNullable<Awaited<ReturnType<typeof createRoleForgeServerClient>>>,
@@ -54,6 +60,14 @@ export default async function SettingsPage() {
       : typeof user.user_metadata?.full_name === "string"
         ? user.user_metadata.full_name
         : "";
+  const planFeatures = premiumActive
+    ? ["Unlimited runs", "DOCX and TXT exports", "Saved projects"]
+    : ["5 runs each month", "PDF export", "Saved projects"];
+  const exportRows: ExportRow[] = [
+    { label: "PDF", enabled: entitlement.exportFormats.pdf, included: "Included", locked: "Unavailable" },
+    { label: "DOCX", enabled: entitlement.exportFormats.docx, included: "Included with Premium", locked: "Premium" },
+    { label: "TXT", enabled: entitlement.exportFormats.txt, included: "Included with Premium", locked: "Premium" },
+  ];
 
   return (
     <main className="settings-page-shell">
@@ -81,7 +95,14 @@ export default async function SettingsPage() {
               <h1>Settings</h1>
               <p>Manage your account, saved projects, export access, and plan state.</p>
             </div>
-            <span className="settings-status-pill good">{planLabel} plan</span>
+            <div className="settings-hero-status">
+              <span className={`settings-status-pill ${premiumActive ? "good" : "ready"}`}>{planLabel} plan</span>
+              <div className="settings-plan-includes" aria-label={`${planLabel} plan includes`}>
+                {planFeatures.map((feature) => (
+                  <span key={feature}>{feature}</span>
+                ))}
+              </div>
+            </div>
           </div>
 
           <section className="settings-section" id="account">
@@ -162,7 +183,7 @@ export default async function SettingsPage() {
               </div>
               <p className="settings-billing-note">
                 {usage.monthlyRunLimit === null
-                  ? "Premium has no monthly run cap. Fair-use protections still apply to keep the service stable."
+                  ? "Premium does not count completed runs against a monthly cap."
                   : "Free includes 5 completed tailoring runs each month. Upgrade when you need more room."}
               </p>
             </div>
@@ -171,21 +192,19 @@ export default async function SettingsPage() {
           <section className="settings-section" id="exports">
             <div className="settings-section-copy">
               <h2>Exports</h2>
-              <p>PDF export is available now. DOCX and TXT unlock only when premium entitlement is active.</p>
+              <p>
+                {premiumActive
+                  ? "PDF, DOCX, and TXT exports are active for this account."
+                  : "PDF export is included on Free. DOCX and TXT unlock with Premium."}
+              </p>
             </div>
             <div className="settings-section-panel settings-export-list">
-              <div className="settings-export-item enabled">
-                <span><RoleForgeIcon name="check" size={14} />PDF</span>
-                <small>{entitlement.exportFormats.pdf ? "Included" : "Unavailable"}</small>
-              </div>
-              <div className={`settings-export-item ${entitlement.exportFormats.docx ? "enabled" : "disabled"}`}>
-                <span><RoleForgeIcon name="lock" size={14} />DOCX</span>
-                <small>{entitlement.exportFormats.docx ? "Premium entitlement active" : "Premium"}</small>
-              </div>
-              <div className={`settings-export-item ${entitlement.exportFormats.txt ? "enabled" : "disabled"}`}>
-                <span><RoleForgeIcon name="lock" size={14} />TXT</span>
-                <small>{entitlement.exportFormats.txt ? "Premium entitlement active" : "Premium"}</small>
-              </div>
+              {exportRows.map((row) => (
+                <div className={`settings-export-item ${row.enabled ? "enabled" : "disabled"}`} key={row.label}>
+                  <span><RoleForgeIcon name={row.enabled ? "check" : "lock"} size={14} />{row.label}</span>
+                  <small>{row.enabled ? row.included : row.locked}</small>
+                </div>
+              ))}
             </div>
           </section>
 
@@ -203,36 +222,45 @@ export default async function SettingsPage() {
                   </button>
                 </form>
               </div>
-              <div className="settings-price-grid">
-                <article className="settings-price-card">
+              {premiumActive ? (
+                <div className="settings-plan-active-card">
                   <div>
-                    <span className="settings-price-kicker">Monthly</span>
-                    <strong>${PREMIUM_PRICE.monthly / 100}</strong>
-                    <small>per month</small>
+                    <span className="settings-price-kicker">Current access</span>
+                    <strong>Premium is active</strong>
+                    <p>Unlimited tailoring runs and PDF, DOCX, and TXT exports are available in the studio.</p>
                   </div>
-                  <form action="/api/billing/checkout" method="post">
-                    <input type="hidden" name="interval" value="month" />
-                    <button className="primary-button" type="submit" disabled={!billingReady || premiumActive}>
-                      {premiumActive ? "Current plan" : "Start monthly"}
-                    </button>
-                  </form>
-                </article>
-                <article className="settings-price-card featured">
-                  <div>
-                    <span className="settings-price-kicker">Yearly</span>
-                    <strong>${PREMIUM_PRICE.yearly / 100}</strong>
-                    <small>per year</small>
-                  </div>
-                  <form action="/api/billing/checkout" method="post">
-                    <input type="hidden" name="interval" value="year" />
-                    <button className="primary-button" type="submit" disabled={!billingReady || premiumActive}>
-                      {premiumActive ? "Current plan" : "Start yearly"}
-                    </button>
-                  </form>
-                </article>
-              </div>
+                  <Link className="btn btn-soft btn-sm settings-inline-link" href="/app">Open studio</Link>
+                </div>
+              ) : (
+                <div className="settings-price-grid">
+                  <article className="settings-price-card">
+                    <div>
+                      <span className="settings-price-kicker">Monthly</span>
+                      <strong>${PREMIUM_PRICE.monthly / 100}</strong>
+                      <small>per month</small>
+                    </div>
+                    <form action="/api/billing/checkout" method="post">
+                      <input type="hidden" name="interval" value="month" />
+                      <button className="primary-button" type="submit" disabled={!billingReady}>Start monthly</button>
+                    </form>
+                  </article>
+                  <article className="settings-price-card featured">
+                    <div>
+                      <span className="settings-price-kicker">Yearly</span>
+                      <strong>${PREMIUM_PRICE.yearly / 100}</strong>
+                      <small>per year</small>
+                    </div>
+                    <form action="/api/billing/checkout" method="post">
+                      <input type="hidden" name="interval" value="year" />
+                      <button className="primary-button" type="submit" disabled={!billingReady}>Start yearly</button>
+                    </form>
+                  </article>
+                </div>
+              )}
               <p className="settings-billing-note">
-                {billingReady
+                {premiumActive
+                  ? "Use Manage billing for subscription changes and invoices."
+                  : billingReady
                   ? "Checkout opens in Stripe. Premium access updates after Stripe confirms the subscription."
                   : "Checkout is disabled until the Stripe and Supabase service environment variables are configured."}
               </p>

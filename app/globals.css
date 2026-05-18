@@ -4538,6 +4538,12 @@ html[data-theme="dark"] input::file-selector-button {
   color: var(--brand-dark);
 }
 
+.settings-status-pill.muted {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--surface-2) 78%, var(--surface));
+  color: var(--ink-3);
+}
+
 .settings-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
@@ -4674,6 +4680,11 @@ html[data-theme="dark"] input::file-selector-button {
   font-size: 0.76rem;
   font-weight: 900;
   text-align: right;
+}
+
+.settings-export-item.enabled {
+  border-color: color-mix(in srgb, var(--good) 26%, var(--line));
+  background: color-mix(in srgb, var(--good) 7%, var(--surface));
 }
 
 .settings-export-item.disabled {
@@ -4967,6 +4978,33 @@ html[data-theme="dark"] input::file-selector-button {
   align-items: center;
 }
 
+.settings-hero-status {
+  display: grid;
+  justify-items: end;
+  gap: 12px;
+}
+
+.settings-plan-includes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.settings-plan-includes span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 6px 10px;
+  border: 1px solid color-mix(in srgb, var(--brand) 22%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+  color: var(--ink-1);
+  font-size: 0.74rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
 .settings-page-hero h1 {
   margin: 4px 0 6px;
   color: var(--ink-0);
@@ -5130,6 +5168,34 @@ html[data-theme="dark"] input::file-selector-button {
 .settings-price-card form,
 .settings-price-card button {
   width: 100%;
+}
+
+.settings-plan-active-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--good) 30%, var(--line));
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--good) 14%, transparent), transparent 54%),
+    color-mix(in srgb, var(--surface) 82%, var(--bg-alt));
+}
+
+.settings-plan-active-card strong {
+  display: block;
+  color: var(--ink-0);
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 0.96;
+}
+
+.settings-plan-active-card p {
+  max-width: 520px;
+  margin: 8px 0 0;
+  color: var(--ink-2);
+  line-height: 1.45;
 }
 
 .settings-billing-note {
@@ -7552,6 +7618,12 @@ html[data-theme="dark"] .settings-status-pill.ready {
   color: #f3c16d;
 }
 
+html[data-theme="dark"] .settings-status-pill.muted {
+  border-color: rgba(255, 247, 233, 0.16);
+  background: rgba(255, 247, 233, 0.055);
+  color: var(--ink-3);
+}
+
 html[data-theme="dark"] .settings-card-head span,
 html[data-theme="dark"] .settings-account-email,
 html[data-theme="dark"] .settings-metric strong,
@@ -7567,6 +7639,13 @@ html[data-theme="dark"] .settings-export-item.disabled small {
 
 html[data-theme="dark"] .settings-export-item small {
   color: #b7e5c4;
+}
+
+html[data-theme="dark"] .settings-export-item.enabled {
+  border-color: rgba(146, 191, 160, 0.26);
+  background:
+    linear-gradient(180deg, rgba(95, 132, 109, 0.14), rgba(255, 247, 233, 0.02)),
+    rgba(12, 17, 31, 0.78);
 }
 
 html[data-theme="dark"] .login-shell {
@@ -7611,6 +7690,12 @@ html[data-theme="dark"] .settings-section {
   border-color: rgba(255, 247, 233, 0.18);
 }
 
+html[data-theme="dark"] .settings-plan-includes span {
+  border-color: rgba(222, 162, 79, 0.26);
+  background: rgba(222, 162, 79, 0.1);
+  color: #fff4da;
+}
+
 html[data-theme="dark"] .settings-price-card {
   background: rgba(255, 247, 233, 0.055);
   border-color: rgba(255, 247, 233, 0.16);
@@ -7641,6 +7726,21 @@ html[data-theme="dark"] .settings-price-card.featured {
     linear-gradient(180deg, rgba(222, 162, 79, 0.14), rgba(255, 247, 233, 0.04)),
     rgba(15, 20, 35, 0.78);
   border-color: rgba(222, 162, 79, 0.34);
+}
+
+html[data-theme="dark"] .settings-plan-active-card {
+  border-color: rgba(146, 191, 160, 0.28);
+  background:
+    linear-gradient(135deg, rgba(95, 132, 109, 0.18), rgba(255, 247, 233, 0.035) 58%),
+    rgba(15, 20, 35, 0.82);
+}
+
+html[data-theme="dark"] .settings-plan-active-card strong {
+  color: var(--ink-0);
+}
+
+html[data-theme="dark"] .settings-plan-active-card p {
+  color: var(--ink-2);
 }
 
 html[data-theme="dark"] .settings-page-nav a {
@@ -7883,6 +7983,14 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
     padding: 18px;
   }
 
+  .settings-hero-status {
+    justify-items: start;
+  }
+
+  .settings-plan-includes {
+    justify-content: flex-start;
+  }
+
   .history-detail-panel,
   .history-detail-panel dl {
     grid-template-columns: 1fr;
@@ -7919,7 +8027,8 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
 
   .settings-action-row,
   .settings-export-item,
-  .settings-billing-head {
+  .settings-billing-head,
+  .settings-plan-active-card {
     align-items: stretch;
     flex-direction: column;
   }
