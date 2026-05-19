@@ -2839,7 +2839,7 @@ export default function Page() {
                 </div>
               </div>
               <div className="generated-grid rf-generated-grid">
-                <article className="generated-card">
+                <article className={`generated-card ${coverRailActive ? "active" : ""}`}>
                   <div className="generated-head"><RoleForgeIcon name="mail" size={14} /> Cover letter</div>
                   <div className="generated-body">
                     {coverLetterText || "After tailoring, the generated cover letter will appear here for review."}
@@ -2855,7 +2855,7 @@ export default function Page() {
                     )}
                   </div>
                 </article>
-                <article className="generated-card">
+                <article className={`generated-card ${interviewRailActive ? "active" : ""}`}>
                   <div className="generated-head"><RoleForgeIcon name="briefcase" size={14} /> Likely interview questions</div>
                   {interviewPrep.length ? (
                     <ul className="generated-list">
