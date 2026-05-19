@@ -1430,6 +1430,14 @@ export default function Page() {
     }, 30);
   }
 
+  function openPreviewMode(mode: PreviewMode) {
+    setPreviewMode(mode);
+    if (mode === "diff") setActiveTab("changes");
+    window.setTimeout(() => {
+      document.getElementById("preview")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 30);
+  }
+
   useEffect(() => {
     const controller = new AbortController();
 
@@ -2648,7 +2656,7 @@ export default function Page() {
             </div>
 
             <div className="rf-studio-grid">
-              <section className="studio-card rf-live-card">
+              <section className="studio-card rf-live-card" id="preview">
                 <div className="studio-card-head">
                   <div>
                     <div className="eyebrow">Live preview</div>
@@ -2743,9 +2751,8 @@ export default function Page() {
                         <div className="suggestion-after">{suggestion.after}</div>
                       </div>
                       <div className="suggestion-actions">
-                        <button className="btn btn-brand btn-sm" type="button" onClick={() => setActiveTab("changes")}><RoleForgeIcon name="check" size={12} />Review</button>
-                        <button className="btn btn-soft btn-sm" type="button" onClick={() => setPreviewMode("tailored")}>Open</button>
-                        <button className="btn btn-ghost btn-sm" type="button" disabled>Skip</button>
+                        <button className="btn btn-brand btn-sm" type="button" onClick={() => openPreviewMode("diff")}><RoleForgeIcon name="check" size={12} />Review changes</button>
+                        <button className="btn btn-soft btn-sm" type="button" onClick={() => openPreviewMode("tailored")}>View draft</button>
                       </div>
                     </article>
                   )) : (
