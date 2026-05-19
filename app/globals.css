@@ -3036,6 +3036,10 @@ html[data-theme="dark"] .result-box {
   line-height: 1.55;
 }
 
+.empty-state-action {
+  margin-top: 12px;
+}
+
 .quick-grid,
 .metric-grid,
 .studio-stats {

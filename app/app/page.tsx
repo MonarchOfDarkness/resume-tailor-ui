@@ -3199,6 +3199,16 @@ export default function Page() {
                     <div className="empty-state">
                       <strong>{historyEmptyTitle}</strong>
                       <p>{historyEmptyDetail}</p>
+                      <button
+                        className="btn btn-soft btn-sm empty-state-action"
+                        type="button"
+                        onClick={() => {
+                          setActiveTab("score");
+                          scrollToStudioEditor();
+                        }}
+                      >
+                        Start a run
+                      </button>
                     </div>
                   )}
                 </div>
