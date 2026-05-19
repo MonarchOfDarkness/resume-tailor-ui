@@ -3191,7 +3191,7 @@ export default function Page() {
                               </button>
                             </>
                           ) : null}
-                          <button className="ghost-button" type="button" onClick={() => openHistoryDetails(entry)} aria-pressed={selected}>
+                          <button className="ghost-button" type="button" onClick={() => openHistoryDetails(entry)} aria-pressed={selected} aria-label={`Show details for ${entry.filename}`}>
                             Details <RoleForgeIcon name="doc" size={14} />
                           </button>
                           <button
@@ -3200,15 +3200,16 @@ export default function Page() {
                             onClick={() => restoreHistoryItem(entry)}
                             disabled={!restorable}
                             title={restorable ? `Restore ${entry.filename} in the studio` : "This saved run only has a download link"}
+                            aria-label={`Restore ${entry.filename} in the studio`}
                           >
                             Restore <RoleForgeIcon name="edit" size={14} />
                           </button>
                           {primaryDownload ? (
-                            <a className="ghost-button" href={primaryDownload.url} download>
-                              Download {latestDownloadLabel}{availableDownloadCount > 1 ? ` +${availableDownloadCount - 1}` : ""} <RoleForgeIcon name="download" size={14} />
+                            <a className="ghost-button" href={primaryDownload.url} download aria-label={`Download ${latestDownloadLabel} for ${entry.filename}`}>
+                              <span className="history-download-prefix">Download </span>{latestDownloadLabel}{availableDownloadCount > 1 ? ` +${availableDownloadCount - 1}` : ""} <RoleForgeIcon name="download" size={14} />
                             </a>
                           ) : (
-                            <button className="ghost-button" type="button" disabled>Download {latestDownloadLabel} <RoleForgeIcon name="download" size={14} /></button>
+                            <button className="ghost-button" type="button" disabled aria-label={`${latestDownloadLabel} download is not ready for ${entry.filename}`}><span className="history-download-prefix">Download </span>{latestDownloadLabel} <RoleForgeIcon name="download" size={14} /></button>
                           )}
                         </div>
                       </article>
