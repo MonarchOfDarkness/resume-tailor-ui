@@ -1432,7 +1432,7 @@ export default function Page() {
 
   function openPreviewMode(mode: PreviewMode) {
     setPreviewMode(mode);
-    if (mode === "diff") setActiveTab("changes");
+    setActiveTab(mode === "diff" ? "changes" : "resume");
     window.setTimeout(() => {
       document.getElementById("preview")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 30);
@@ -2435,7 +2435,12 @@ export default function Page() {
       : "Latest run";
   const visibleSelectedHistoryDownloads = visibleSelectedHistoryItem ? historyDownloadEntriesFor(visibleSelectedHistoryItem) : [];
   const selectedHistoryDownloadCount = visibleSelectedHistoryDownloads.length;
-  const workspacePanelOpen = activeTab === "history";
+  const editorRailActive = activeTab === "score" || activeTab === "resume";
+  const targetRailActive = activeTab === "gap";
+  const suggestionsRailActive = activeTab === "changes";
+  const atsRailActive = activeTab === "ats";
+  const coverRailActive = activeTab === "cover";
+  const interviewRailActive = activeTab === "interview";
 
   const suggestionCards: StudioSuggestion[] = result
     ? [
@@ -2571,12 +2576,12 @@ export default function Page() {
         <div className="rf-studio-layout">
           <aside className="rf-studio-rail" aria-label="Studio sections">
             <div className="rail-section-title">Build</div>
-            <a className={`rail-item ${workspacePanelOpen ? "" : "active"}`} href="#editor" onClick={() => setActiveTab("score")}><RoleForgeIcon name="doc" size={15} /> Editor</a>
-            <a className="rail-item" href="#target" onClick={() => setActiveTab("score")}><RoleForgeIcon name="target" size={15} /> Job target</a>
-            <a className="rail-item" href="#suggestions" onClick={() => setActiveTab("score")}><RoleForgeIcon name="sparkle" size={15} /> AI tailor <span className="rail-pill">{suggestionCards.length || 0}</span></a>
-            <a className="rail-item" href="#ats" onClick={() => setActiveTab("score")}><RoleForgeIcon name="scan" size={15} /> ATS check</a>
-            <a className="rail-item" href="#assets" onClick={() => setActiveTab("cover")}><RoleForgeIcon name="mail" size={15} /> Cover letter</a>
-            <a className="rail-item" href="#assets" onClick={() => setActiveTab("interview")}><RoleForgeIcon name="briefcase" size={15} /> Interview prep</a>
+            <a className={`rail-item ${editorRailActive ? "active" : ""}`} href="#editor" onClick={() => setActiveTab("score")}><RoleForgeIcon name="doc" size={15} /> Editor</a>
+            <a className={`rail-item ${targetRailActive ? "active" : ""}`} href="#target" onClick={() => setActiveTab("gap")}><RoleForgeIcon name="target" size={15} /> Job target</a>
+            <a className={`rail-item ${suggestionsRailActive ? "active" : ""}`} href="#suggestions" onClick={() => setActiveTab("changes")}><RoleForgeIcon name="sparkle" size={15} /> AI tailor <span className="rail-pill">{suggestionCards.length || 0}</span></a>
+            <a className={`rail-item ${atsRailActive ? "active" : ""}`} href="#ats" onClick={() => setActiveTab("ats")}><RoleForgeIcon name="scan" size={15} /> ATS check</a>
+            <a className={`rail-item ${coverRailActive ? "active" : ""}`} href="#assets" onClick={() => setActiveTab("cover")}><RoleForgeIcon name="mail" size={15} /> Cover letter</a>
+            <a className={`rail-item ${interviewRailActive ? "active" : ""}`} href="#assets" onClick={() => setActiveTab("interview")}><RoleForgeIcon name="briefcase" size={15} /> Interview prep</a>
             <div className="rail-divider" />
             <div className="rail-section-title">Workspace</div>
             <Link className="rail-item" href="/#templates"><RoleForgeIcon name="layers" size={15} /> Templates</Link>
