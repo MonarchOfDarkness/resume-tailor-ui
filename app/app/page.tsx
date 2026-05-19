@@ -586,16 +586,40 @@ function DiffResumeDocument({
   const documentName = filename ? filename.replace(/\.(docx|pdf|txt)$/i, "") : "Resume";
   const hasBefore = Boolean(sourceText?.trim());
   const hasAfter = Boolean(tailoredText?.trim());
+  const comparisonStatus = hasBefore && hasAfter
+    ? "Ready to compare"
+    : hasBefore
+      ? "Waiting for tailored draft"
+      : hasAfter
+        ? "Original source not saved"
+        : "Waiting for both sides";
+  const comparisonHelp = hasBefore && hasAfter
+    ? "Review what changed before exporting the finished draft."
+    : hasBefore
+      ? "Run Tailor to generate the after side for this comparison."
+      : hasAfter
+        ? "The tailored draft is ready, but this run does not include saved source text for the before side."
+        : "Upload a resume and complete a tailor run to compare the original with the finished draft.";
 
   return (
     <div className="rf-resume-paper rf-resume-paper-diff">
       <div className="rf-resume-head">
         <h3>Change review</h3>
         <p>{documentName}</p>
-        <span>
-          {hasBefore && hasAfter
-            ? "Compare the source text with the tailored draft before export."
-            : "Restore a completed run or finish the tailor workflow to compare both sides."}
+        <span>{comparisonHelp}</span>
+      </div>
+      <div className="rf-diff-readiness" aria-label="Comparison readiness">
+        <span className={hasBefore ? "" : "waiting"}>
+          <strong>Original</strong>
+          {hasBefore ? "Ready" : "Waiting"}
+        </span>
+        <span className={hasAfter ? "" : "waiting"}>
+          <strong>Tailored</strong>
+          {hasAfter ? "Ready" : "Waiting"}
+        </span>
+        <span className={hasBefore && hasAfter ? "" : "waiting"}>
+          <strong>Compare</strong>
+          {comparisonStatus}
         </span>
       </div>
       <section>
@@ -2345,6 +2369,7 @@ export default function Page() {
       normalized.includes("unavailable") ||
       normalized.includes("needs another try") ||
       normalized.includes("upload a resume") ||
+      normalized.includes("appear after a run") ||
       normalized.includes("run tailor")
       ? "warn"
       : "";

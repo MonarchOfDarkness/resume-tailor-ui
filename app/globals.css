@@ -6071,6 +6071,40 @@ html[data-theme="dark"] input::file-selector-button {
   min-height: 480px;
 }
 
+.rf-diff-readiness {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 22px 0 24px;
+}
+
+.rf-diff-readiness span {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #e4dbc9;
+  border-radius: 12px;
+  background: #f9fbf6;
+  color: #244d2d;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.rf-diff-readiness span.waiting {
+  background: #fff7e6;
+  color: #8c5d2d;
+}
+
+.rf-diff-readiness strong {
+  color: #777;
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .rf-resume-change-list {
   display: grid;
   gap: 9px;
@@ -6859,6 +6893,10 @@ html[data-theme="dark"] .rf-rail-upgrade p {
   }
 
   .rf-preview-empty-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-diff-readiness {
     grid-template-columns: 1fr;
   }
 }
