@@ -8474,9 +8474,34 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
     grid-template-columns: 1fr;
   }
 
+  .history-detail-panel {
+    gap: 12px;
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    scroll-margin-top: 14px;
+  }
+
+  .history-detail-panel h3 {
+    font-size: 1.18rem;
+  }
+
+  .history-detail-panel dl > div {
+    padding: 10px;
+  }
+
   .history-project-facts,
   .history-selected-run {
     grid-template-columns: 1fr;
+  }
+
+  .history-selected-run {
+    gap: 6px;
+    padding: 11px;
+  }
+
+  .history-selected-run strong {
+    white-space: normal;
   }
 
   .history-overview {

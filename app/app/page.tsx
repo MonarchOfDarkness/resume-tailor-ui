@@ -2447,6 +2447,18 @@ export default function Page() {
       : activeHistoryFilter === "local"
         ? localHistoryGroups
         : historyGroups;
+  const selectHistoryFilter = (nextFilter: HistoryFilter) => {
+    const nextGroups =
+      nextFilter === "account"
+        ? accountHistoryGroups
+        : nextFilter === "local"
+          ? localHistoryGroups
+          : historyGroups;
+    setHistoryFilter(nextFilter);
+    setSelectedHistoryId(nextGroups[0]?.latest.id ?? null);
+    setExpandedHistoryGroupKey(null);
+    setProjectActionMessage("");
+  };
   const selectedHistoryItem =
     history.find((entry) => entry.id === selectedHistoryId) ??
     history.find((entry) => isAccountHistoryItem(entry, syncedHistoryIds)) ??
@@ -3077,7 +3089,7 @@ export default function Page() {
                           type="button"
                           role="tab"
                           aria-selected={activeHistoryFilter === "all"}
-                          onClick={() => setHistoryFilter("all")}
+                          onClick={() => selectHistoryFilter("all")}
                         >
                           All <span>{historyGroups.length}</span>
                         </button>
@@ -3087,7 +3099,7 @@ export default function Page() {
                             type="button"
                             role="tab"
                             aria-selected={activeHistoryFilter === "account"}
-                            onClick={() => setHistoryFilter("account")}
+                            onClick={() => selectHistoryFilter("account")}
                           >
                             Account <span>{accountHistoryGroups.length}</span>
                           </button>
@@ -3097,7 +3109,7 @@ export default function Page() {
                           type="button"
                           role="tab"
                           aria-selected={activeHistoryFilter === "local"}
-                          onClick={() => setHistoryFilter("local")}
+                          onClick={() => selectHistoryFilter("local")}
                         >
                           This browser <span>{localHistoryGroups.length}</span>
                         </button>
