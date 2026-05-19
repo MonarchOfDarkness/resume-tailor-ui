@@ -290,7 +290,7 @@ function Templates() {
             <div className="eyebrow">Templates</div>
               <h2 className="display h2">Resume formats.<br /><span className="italic">Beautifully</span> simple.</h2>
           </div>
-          <p className="lede">Templates are shown as design direction. Any premium template library should stay gated until real billing and plan rules exist.</p>
+          <p className="lede">Templates are shown as design direction. A selectable template library should stay gated until the templates are ready to ship.</p>
         </div>
       </div>
       <div className="templates-row">
@@ -350,9 +350,9 @@ function Features() {
     [
       "layers",
       "accent",
-      "Application tracker",
-      "Keep tracking surfaced as planned product space until account storage is wired.",
-      ["Coming soon", "Needs auth and saved projects", "No fake dashboard state"],
+      "Saved projects",
+      "Keep completed tailoring runs tied to your account so useful drafts can be reopened later.",
+      ["Account sync", "History restore", "Saved export links"],
     ],
   ] as const;
 
@@ -412,11 +412,11 @@ function Pricing() {
           <article className="price-card featured">
             <div className="price-name">Premium</div>
             <div className="price-amount"><span className="v">$9</span><span className="m">/mo</span></div>
-            <div className="price-desc">$72/year for early users. Premium unlocks account entitlements as the export stack comes online.</div>
+            <div className="price-desc">$72/year for early users. Premium unlocks unlimited runs plus DOCX and TXT exports.</div>
             <ul className="price-list">
+              <li><RoleForgeIcon name="check" size={14} />Unlimited tailoring runs</li>
+              <li><RoleForgeIcon name="check" size={14} />DOCX and TXT exports</li>
               <li><RoleForgeIcon name="check" size={14} />Saved project sync</li>
-              <li><RoleForgeIcon name="lock" size={14} />DOCX and TXT export entitlement</li>
-              <li><RoleForgeIcon name="lock" size={14} />Premium template access when released</li>
             </ul>
             <Link className="btn btn-brand btn-lg" href="/settings#billing">View premium</Link>
           </article>
@@ -431,9 +431,9 @@ function FAQ() {
     ["Does RoleForge replace my judgment?", "No. The app surfaces generated guidance and exports a draft for your review."],
     ["Can I use a job posting URL?", "Yes, if the posting is public and RoleForge can access it. Pasted text is the most reliable target input."],
     ["What file formats can I export?", "The current free workflow exports PDF. DOCX and TXT are premium entitlement formats and remain locked unless billing confirms access."],
-    ["Can I use templates?", "Templates are visual examples for now. A selectable template library needs product rules before launch."],
+    ["Can I use templates?", "Templates are visual examples for now. A selectable template library will stay gated until the designs are ready to use."],
     ["Is sign-in available?", "Yes. Google and email magic-link sign-in are available. Saved projects sync after sign-in."],
-    ["How much is Premium?", "The launch price is $9/month or $72/year. Checkout is handled by Stripe when billing is configured for the deployment."],
+    ["How much is Premium?", "The launch price is $9/month or $72/year. Checkout and billing management are handled by Stripe."],
   ] as const;
 
   return (
@@ -493,7 +493,7 @@ function Footer() {
         <div className="footer-col">
           <h3>Launch notes</h3>
           <span>Auth: required for studio</span>
-          <span>Billing: coming soon</span>
+          <span>Billing: Stripe checkout</span>
           <span>Customer proof: not included</span>
         </div>
       </div>
