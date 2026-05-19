@@ -2396,7 +2396,7 @@ export default function Page() {
   const historyGroups = groupHistoryItems(history, syncedHistoryIds);
   const accountHistoryGroups = historyGroups.filter((group) => group.accountCount > 0);
   const localHistoryGroups = historyGroups.filter((group) => group.localCount > 0);
-  const showHistoryFilter = signedIn || (accountHistoryGroups.length > 0 && localHistoryGroups.length > 0);
+  const showHistoryFilter = accountHistoryGroups.length > 0 && localHistoryGroups.length > 0;
   const activeHistoryFilter = showHistoryFilter ? historyFilter : "all";
   const visibleHistoryGroups =
     activeHistoryFilter === "account"
