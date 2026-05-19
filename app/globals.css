@@ -8253,6 +8253,19 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
   .rf-intake-grid .rf-target-editor textarea {
     min-height: 230px;
   }
+
+  .settings-page-hero,
+  .settings-section {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-hero-status {
+    justify-items: start;
+  }
+
+  .settings-plan-includes {
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 760px) {
