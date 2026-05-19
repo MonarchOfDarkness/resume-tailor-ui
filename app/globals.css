@@ -5876,7 +5876,7 @@ html[data-theme="dark"] input::file-selector-button {
 
 .rf-live-card .panel-title {
   font-family: var(--font-sans);
-  font-size: clamp(1.65rem, 2.25vw, 2.15rem);
+  font-size: 2rem;
   font-weight: 850;
   letter-spacing: -0.01em;
   line-height: 1.08;
@@ -5887,6 +5887,7 @@ html[data-theme="dark"] input::file-selector-button {
   min-height: 560px;
   width: 100%;
   overflow: visible;
+  overflow-wrap: anywhere;
   padding: 56px 64px 58px;
   border: 1px solid #e9e4da;
   border-radius: 14px;
@@ -5900,19 +5901,19 @@ html[data-theme="dark"] input::file-selector-button {
 
 .rf-resume-head h3 {
   margin: 0;
-  font-size: clamp(2.2rem, 4.1vw, 3.65rem);
+  font-size: 2.85rem;
   line-height: 0.95;
 }
 
 .rf-resume-head p {
   margin: 13px 0 9px;
   color: #555;
-  font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+  font-size: 1.2rem;
 }
 
 .rf-resume-head span {
   color: #777;
-  font-size: clamp(0.86rem, 1.1vw, 1.08rem);
+  font-size: 0.95rem;
 }
 
 .rf-resume-paper section {
@@ -5923,14 +5924,14 @@ html[data-theme="dark"] input::file-selector-button {
   margin: 0 0 16px;
   padding-bottom: 8px;
   border-bottom: 2px solid #222;
-  font-size: clamp(1rem, 1.25vw, 1.18rem);
+  font-size: 1.02rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .rf-resume-paper p,
 .rf-resume-paper li {
-  font-size: clamp(0.9rem, 1.04vw, 1.04rem);
+  font-size: 0.98rem;
   line-height: 1.52;
 }
 
@@ -5952,7 +5953,7 @@ html[data-theme="dark"] input::file-selector-button {
   margin: 0;
   color: #222;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(0.95rem, 1.15vw, 1.08rem);
+  font-size: 0.98rem;
   line-height: 1.52;
 }
 
@@ -5970,7 +5971,7 @@ html[data-theme="dark"] input::file-selector-button {
   padding-bottom: 7px;
   border-bottom: 2px solid #222;
   color: #1f1f1f;
-  font-size: clamp(0.96rem, 1.16vw, 1.08rem);
+  font-size: 0.96rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -6198,7 +6199,7 @@ html[data-theme="dark"] input::file-selector-button {
   border-radius: 8px;
   background: #f0ede6;
   color: #383838;
-  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  font-size: 0.86rem;
 }
 
 .suggestion-list {
@@ -6677,6 +6678,26 @@ html[data-theme="dark"] .rf-rail-upgrade p {
     flex-direction: column;
   }
 
+  .rf-live-card .studio-card-head {
+    padding: 20px 20px 0;
+  }
+
+  .rf-live-card .panel-title {
+    font-size: 1.52rem;
+  }
+
+  .rf-live-card .studio-tabs-mini {
+    width: 100%;
+    min-height: auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .rf-live-card .studio-tabs-mini button {
+    min-width: 0;
+    min-height: 42px;
+    font-size: 0.92rem;
+  }
+
   .rf-studio-stats,
   .rf-generated-grid,
   .rf-diff-grid {
@@ -6716,6 +6737,24 @@ html[data-theme="dark"] .rf-rail-upgrade p {
   .rf-resume-paper {
     min-height: 420px;
     padding: 24px;
+  }
+
+  .rf-resume-head h3 {
+    font-size: 2rem;
+  }
+
+  .rf-resume-head p {
+    font-size: 1.05rem;
+  }
+
+  .rf-resume-paper h4 {
+    font-size: 0.9rem;
+  }
+
+  .rf-resume-paper p,
+  .rf-resume-paper li,
+  .rf-resume-generated {
+    font-size: 0.92rem;
   }
 
   .rf-preview-wrap {
@@ -8379,6 +8418,20 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
 
   .rf-intake-grid .mode-segment {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .rf-live-card .studio-tabs-mini {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .rf-live-card .studio-tabs-mini button {
+    min-width: 0;
+    padding-inline: 6px;
+    font-size: 0.88rem;
   }
 }
 
