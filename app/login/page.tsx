@@ -69,25 +69,31 @@ export default async function LoginPage({ searchParams }: { searchParams: LoginS
       <section className="login-panel" aria-labelledby="login-title">
         <div className="login-copy">
           <div className="eyebrow">Account required</div>
-          <h1 id="login-title" className="display">Your private resume studio starts here.</h1>
+          <h1 id="login-title" className="display">Sign in to your RoleForge studio.</h1>
           <p>{notice}</p>
           <div className="login-benefits" aria-label="Account benefits">
             <span><RoleForgeIcon name="check" size={14} /> Saved projects stay with your account</span>
             <span><RoleForgeIcon name="lock" size={14} /> The studio is protected from anonymous use</span>
             <span><RoleForgeIcon name="download" size={14} /> PDF exports remain available after runs</span>
           </div>
-          <div className="login-preview" aria-label="Studio workflow preview">
-            <div>
-              <span>Resume</span>
-              <strong>Selected</strong>
+          <div className="login-studio-preview" aria-label="Protected studio preview">
+            <div className="login-preview-top">
+              <span>Protected workspace</span>
+              <strong>Resume studio</strong>
             </div>
-            <div>
-              <span>Target</span>
-              <strong>Ready</strong>
-            </div>
-            <div>
-              <span>Saved project</span>
-              <strong>Account tied</strong>
+            <div className="login-preview-sheet">
+              <div>
+                <span>Resume</span>
+                <strong>Selected</strong>
+              </div>
+              <div>
+                <span>Target</span>
+                <strong>Ready</strong>
+              </div>
+              <div>
+                <span>Projects</span>
+                <strong>Saved</strong>
+              </div>
             </div>
           </div>
         </div>
@@ -97,8 +103,8 @@ export default async function LoginPage({ searchParams }: { searchParams: LoginS
             <>
               <div className="login-card-head">
                 <span className={`login-status ${tone}`}>{notice}</span>
-                <h2>Continue to RoleForge AI</h2>
-                <p>Google is fastest. Email sends a secure sign-in link to this address.</p>
+                <h2>Choose your sign-in method</h2>
+                <p>Use Google for the fastest path, or send a secure email link to continue.</p>
               </div>
               <div className="login-session-strip" aria-label="Protected account access">
                 <span><RoleForgeIcon name="lock" size={13} /> Protected studio</span>
