@@ -3471,6 +3471,40 @@ html[data-theme="dark"] .result-box {
   flex-wrap: wrap;
 }
 
+.history-confirm-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(154, 57, 46, 0.34);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(154, 57, 46, 0.16), rgba(198, 156, 84, 0.08)),
+    var(--surface);
+  box-shadow: 0 18px 46px rgba(11, 12, 28, 0.12);
+}
+
+.history-confirm-inline > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.history-confirm-inline strong {
+  color: var(--ink-0);
+  font-size: 0.96rem;
+  font-weight: 950;
+}
+
+.history-confirm-inline span {
+  color: var(--ink-2);
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
 .history-content-grid {
   display: grid;
   gap: 14px;
@@ -3681,6 +3715,30 @@ html[data-theme="dark"] .result-box {
   min-width: 0;
   justify-content: center;
   white-space: nowrap;
+}
+
+.history-confirm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.history-actions .ghost-button.danger {
+  border-color: rgba(154, 57, 46, 0.46);
+  color: #9a392e;
+  background: rgba(154, 57, 46, 0.14);
+}
+
+.history-actions .ghost-button.danger:hover,
+.history-actions .ghost-button.danger:focus-visible {
+  border-color: rgba(154, 57, 46, 0.72);
+  background: rgba(154, 57, 46, 0.22);
+}
+
+html[data-theme="dark"] .history-actions .ghost-button.danger {
+  color: #f0b2a8;
 }
 
 .history-rename-field {
@@ -8927,6 +8985,22 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
     flex: 1 1 140px;
   }
 
+  .history-confirm-inline {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .history-confirm-inline > div:last-child {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .history-confirm-inline .btn {
+    width: 100%;
+  }
+
   .history-export-actions {
     width: 100%;
     justify-content: stretch;
@@ -8952,6 +9026,13 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
 
   .history-content-grid.has-detail .history-actions {
     grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  }
+
+  .history-confirm-actions {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
   }
 
   .history-action-download {

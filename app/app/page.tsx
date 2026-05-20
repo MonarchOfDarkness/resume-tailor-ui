@@ -1406,6 +1406,8 @@ export default function Page() {
   const [expandedHistoryGroupKey, setExpandedHistoryGroupKey] = useState<string | null>(null);
   const [projectActionId, setProjectActionId] = useState<string | null>(null);
   const [projectActionMessage, setProjectActionMessage] = useState("");
+  const [confirmingClearHistory, setConfirmingClearHistory] = useState(false);
+  const [confirmingDeleteProjectId, setConfirmingDeleteProjectId] = useState<string | null>(null);
   const [capabilities, setCapabilities] = useState<CapabilitiesResponse | null>(null);
   const editorSectionRef = useRef<HTMLElement | null>(null);
   const historySectionRef = useRef<HTMLElement | null>(null);
@@ -2203,20 +2205,13 @@ export default function Page() {
     if (!removableCount) return;
 
     const runLabel = `${removableCount} browser run${removableCount === 1 ? "" : "s"}`;
-    const confirmed = window.confirm(
-      signedIn
-        ? `Clear ${runLabel}? Saved account projects will stay available.`
-        : `Clear ${runLabel}? This cannot be undone.`,
-    );
-
-    if (!confirmed) return;
-
     const next = signedIn ? history.filter((entry) => isAccountHistoryItem(entry, syncedHistoryIds)) : [];
     setHistory(next);
     saveHistory(next);
     setRestoredHistoryId((current) => (current && next.some((entry) => entry.id === current) ? current : null));
     setSelectedHistoryId((current) => (current && next.some((entry) => entry.id === current) ? current : null));
     setProjectActionMessage("");
+    setConfirmingClearHistory(false);
     setHistorySyncState(signedIn ? "synced" : "local");
     setHistorySyncMessage(signedIn ? `Cleared ${runLabel}. Account projects are still saved.` : `Cleared ${runLabel}.`);
   }
@@ -2226,6 +2221,7 @@ export default function Page() {
     setEditingProjectId(entry.projectId);
     setEditingProjectTitle(historyProjectTitle(entry, syncedHistoryIds));
     setProjectActionMessage("");
+    setConfirmingDeleteProjectId(null);
   }
 
   async function submitProjectRename(entry: HistoryItem) {
@@ -2279,6 +2275,7 @@ export default function Page() {
       setProjectActionMessage("Saved project could not be deleted. Try again.");
     } finally {
       setProjectActionId(null);
+      setConfirmingDeleteProjectId(null);
     }
   }
 
@@ -2637,6 +2634,8 @@ export default function Page() {
     setSelectedHistoryId(nextGroups[0]?.latest.id ?? null);
     setExpandedHistoryGroupKey(null);
     setProjectActionMessage("");
+    setConfirmingClearHistory(false);
+    setConfirmingDeleteProjectId(null);
   };
   const selectedHistoryItem =
     history.find((entry) => entry.id === selectedHistoryId) ??
@@ -2652,6 +2651,11 @@ export default function Page() {
     selectedHistoryGroup?.latest ??
     null;
   const clearHistoryLabel = signedIn && savedProjectCount ? `Clear local${localHistoryCount ? ` (${localHistoryCount})` : ""}` : "Clear history";
+  const clearHistoryTargetCount = signedIn ? localHistoryCount : history.length;
+  const clearHistoryRunLabel = `${clearHistoryTargetCount} browser run${clearHistoryTargetCount === 1 ? "" : "s"}`;
+  const clearHistoryDetail = signedIn
+    ? "Account projects stay saved. Only runs stored in this browser are removed."
+    : "This removes the runs stored in this browser.";
   const historyEmptyTitle =
     activeHistoryFilter === "account"
       ? "No account projects yet"
@@ -3313,9 +3317,32 @@ export default function Page() {
                         Refresh
                       </button>
                     ) : null}
-                    <button className="btn btn-soft btn-sm" type="button" onClick={clearLocalHistory} disabled={signedIn ? !localHistoryCount : !history.length}>{clearHistoryLabel}</button>
+                    <button
+                      className="btn btn-soft btn-sm"
+                      type="button"
+                      onClick={() => setConfirmingClearHistory(true)}
+                      disabled={!clearHistoryTargetCount}
+                    >
+                      {clearHistoryLabel}
+                    </button>
                   </div>
                 </div>
+                {confirmingClearHistory ? (
+                  <div className="history-confirm-inline" role="alert">
+                    <div>
+                      <strong>Clear {clearHistoryRunLabel}?</strong>
+                      <span>{clearHistoryDetail}</span>
+                    </div>
+                    <div>
+                      <button className="btn btn-brand btn-sm" type="button" onClick={clearLocalHistory}>
+                        Clear
+                      </button>
+                      <button className="btn btn-soft btn-sm" type="button" onClick={() => setConfirmingClearHistory(false)}>
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
                 {visibleHistoryGroups.length ? (
                   <div className={`history-overview ${showAccountHistorySummary ? "" : "compact"}`} aria-label="Saved project overview">
                     <div>
@@ -3417,9 +3444,20 @@ export default function Page() {
                                 <button className="ghost-button history-action-manage" type="button" onClick={() => startRenameProject(manageEntry)} disabled={actionBusy}>
                                   Rename <RoleForgeIcon name="edit" size={14} />
                                 </button>
-                                <button className="ghost-button history-action-manage" type="button" onClick={() => { if (window.confirm("Delete this saved project from your account?")) void removeSavedProject(manageEntry); }} disabled={actionBusy}>
-                                  Delete <RoleForgeIcon name="x" size={14} />
-                                </button>
+                                {confirmingDeleteProjectId === manageEntry.projectId ? (
+                                  <div className="history-confirm-actions" role="alert" aria-label={`Confirm deleting ${group.title}`}>
+                                    <button className="ghost-button danger history-action-manage" type="button" onClick={() => void removeSavedProject(manageEntry)} disabled={actionBusy}>
+                                      Confirm delete
+                                    </button>
+                                    <button className="ghost-button history-action-manage" type="button" onClick={() => setConfirmingDeleteProjectId(null)} disabled={actionBusy}>
+                                      Cancel
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button className="ghost-button history-action-manage" type="button" onClick={() => setConfirmingDeleteProjectId(manageEntry.projectId ?? null)} disabled={actionBusy}>
+                                    Delete <RoleForgeIcon name="x" size={14} />
+                                  </button>
+                                )}
                               </>
                             ) : null}
                             <button className="ghost-button history-action-details" type="button" onClick={() => openHistoryDetails(entry)} aria-pressed={selected} aria-label={`Show details for ${entry.filename}`}>
