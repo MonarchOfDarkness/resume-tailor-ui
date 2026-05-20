@@ -586,11 +586,12 @@ function DiffResumeDocument({
   const documentName = filename ? filename.replace(/\.(docx|pdf|txt)$/i, "") : "Resume";
   const hasBefore = Boolean(sourceText?.trim());
   const hasAfter = Boolean(tailoredText?.trim());
+  const missingSavedSource = hasAfter && !hasBefore;
   const comparisonStatus = hasBefore && hasAfter
     ? "Ready to compare"
     : hasBefore
       ? "Waiting for tailored draft"
-      : hasAfter
+      : missingSavedSource
         ? "Original source not saved"
         : "Waiting for both sides";
   const comparisonHelp = hasBefore && hasAfter
@@ -611,7 +612,7 @@ function DiffResumeDocument({
       <div className="rf-diff-readiness" aria-label="Comparison readiness">
         <span className={hasBefore ? "" : "waiting"}>
           <strong>Original</strong>
-          {hasBefore ? "Ready" : "Waiting"}
+          {hasBefore ? "Ready" : missingSavedSource ? "Not saved" : "Waiting"}
         </span>
         <span className={hasAfter ? "" : "waiting"}>
           <strong>Tailored</strong>
@@ -637,7 +638,11 @@ function DiffResumeDocument({
       <div className="rf-diff-grid" aria-label="Original and tailored resume comparison">
         <article className="rf-diff-column before">
           <div className="rf-diff-kicker">Original</div>
-          <PreviewLineList lines={beforeLines} keywords={[]} empty="Upload a resume, or restore a run with saved source text, to show the before state." />
+          <PreviewLineList
+            lines={beforeLines}
+            keywords={[]}
+            empty={missingSavedSource ? "Original source text was not saved for this run." : "Upload a resume, or restore a run with saved source text, to show the before state."}
+          />
         </article>
         <article className="rf-diff-column after">
           <div className="rf-diff-kicker">Tailored</div>
