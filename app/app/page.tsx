@@ -1189,11 +1189,14 @@ function formatResetDate(value: string) {
 function scrollDocumentTo(top: number, behavior: ScrollBehavior) {
   const nextTop = Math.max(0, top);
   const fallback = () => {
+    if (document.scrollingElement) document.scrollingElement.scrollTop = nextTop;
     document.documentElement.scrollTop = nextTop;
     document.body.scrollTop = nextTop;
   };
 
-  if (typeof window.scrollTo === "function") {
+  if (document.scrollingElement && typeof document.scrollingElement.scrollTo === "function") {
+    document.scrollingElement.scrollTo({ top: nextTop, behavior });
+  } else if (typeof window.scrollTo === "function") {
     window.scrollTo({ top: nextTop, behavior });
   } else {
     fallback();
@@ -1467,11 +1470,12 @@ export default function Page() {
     setActiveTab("history");
     setAccountPanelOpen(false);
     setHistoryScrollRequest((request) => request + 1);
-  }, []);
+    window.setTimeout(() => scrollToHistoryPanel("auto"), 0);
+  }, [scrollToHistoryPanel]);
 
   useEffect(() => {
     if (activeTab !== "history" || historyScrollRequest === 0) return;
-    scrollToHistoryPanel();
+    scrollToHistoryPanel("auto");
   }, [activeTab, historyScrollRequest, scrollToHistoryPanel]);
 
   useEffect(() => {
