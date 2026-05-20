@@ -1336,7 +1336,7 @@ export default function Page() {
     if (!supabaseClient) return extra;
 
     const { data, error: sessionError } = await supabaseClient.auth.getSession();
-    if (sessionError) throw new Error("Account session is not ready yet.");
+    if (sessionError) throw new Error("We could not confirm your session. Try again in a moment.");
 
     const token = data.session?.access_token;
     if (!token) throw new Error("Sign in to use the resume workflow.");
@@ -1358,7 +1358,7 @@ export default function Page() {
 
     if (!accountReady) {
       setHistorySyncState("error");
-      setHistorySyncMessage("Account sync is not ready yet. Local history still works.");
+      setHistorySyncMessage("Saved projects are reconnecting. Local history still works.");
       return;
     }
 
@@ -1770,7 +1770,7 @@ export default function Page() {
   async function syncCompletedRun(item: HistoryItem, output: TailorResult, url: string, options: { countUsage?: boolean } = {}) {
     if (!signedIn || !accountReady) {
       setHistorySyncState("local");
-      setHistorySyncMessage(signedIn ? "Account sync is not ready yet. Local history still works." : "Sign in to sync completed runs");
+      setHistorySyncMessage(signedIn ? "Saved projects are reconnecting. Local history still works." : "Sign in to sync completed runs");
       return;
     }
 
@@ -2638,8 +2638,8 @@ export default function Page() {
                     </>
                   ) : (
                     <>
-                      <strong>Account setup needed</strong>
-                      <p>Account sign-in is not enabled in this environment yet.</p>
+                      <strong>Sign-in unavailable</strong>
+                      <p>Account access is temporarily unavailable here.</p>
                     </>
                   )}
                   <div className="studio-account-list">
