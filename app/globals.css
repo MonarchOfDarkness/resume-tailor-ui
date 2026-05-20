@@ -8820,6 +8820,10 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
     gap: 8px;
   }
 
+  .history-content-grid.has-detail .history-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .history-action-download {
     grid-column: 1 / -1;
   }
