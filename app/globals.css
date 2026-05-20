@@ -4670,9 +4670,9 @@ html[data-theme="dark"] input::file-selector-button {
 }
 
 .rf-studio-hero {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(300px, 560px);
   align-items: flex-start;
-  justify-content: space-between;
   gap: 28px;
   padding: 2px 4px 0;
   min-width: 0;
@@ -4682,7 +4682,6 @@ html[data-theme="dark"] input::file-selector-button {
 
 .rf-studio-hero > div:first-child {
   min-width: 0;
-  flex: 1 1 420px;
   max-width: 100%;
   overflow: hidden;
 }
@@ -4712,9 +4711,15 @@ html[data-theme="dark"] input::file-selector-button {
   line-height: 0.94;
   max-width: 100%;
   width: 100%;
-  overflow-wrap: break-word;
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: normal;
   text-wrap: balance;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   word-break: normal;
+  hyphens: none;
 }
 
 .rf-studio-hero p {
@@ -6700,6 +6705,15 @@ html[data-theme="dark"] .rf-rail-upgrade p {
     grid-template-columns: 1fr;
   }
 
+  .rf-studio-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .studio-hero-actions {
+    width: min(100%, 560px);
+    justify-content: flex-start;
+  }
+
   .rf-live-card .studio-tabs-mini {
     width: min(330px, 48vw);
   }
@@ -6785,7 +6799,6 @@ html[data-theme="dark"] .rf-rail-upgrade p {
   .rf-studio-hero,
   .studio-card-head {
     align-items: stretch;
-    flex-direction: column;
   }
 
   .rf-studio-hero {
@@ -6794,7 +6807,6 @@ html[data-theme="dark"] .rf-rail-upgrade p {
 
   .rf-studio-hero > div:first-child {
     width: 100%;
-    flex: none;
   }
 
   .studio-hero-actions {
