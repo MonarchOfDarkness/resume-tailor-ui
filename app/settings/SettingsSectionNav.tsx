@@ -20,30 +20,7 @@ export function SettingsSectionNav() {
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const scrollSpyLockUntilRef = useRef(0);
   const scrollToSection = useCallback((sectionId: SettingsSectionId, behavior: ScrollBehavior = "smooth") => {
-    const target = document.getElementById(sectionId);
-    if (!target) return;
-
-    const targetTop = Math.max(0, target.getBoundingClientRect().top + window.scrollY - 24);
-    const scrollTarget = document.scrollingElement ?? document.documentElement;
-    const fallback = () => {
-      scrollTarget.scrollTop = targetTop;
-      document.documentElement.scrollTop = targetTop;
-      document.body.scrollTop = targetTop;
-    };
-
-    if (typeof window.scrollTo === "function") {
-      window.scrollTo({ top: targetTop, behavior });
-    } else if (typeof scrollTarget.scrollTo === "function") {
-      scrollTarget.scrollTo({ top: targetTop, behavior });
-    }
-
-    if (behavior === "auto") {
-      fallback();
-    } else {
-      window.setTimeout(() => {
-        if (Math.abs(window.scrollY - targetTop) > 48) fallback();
-      }, 180);
-    }
+    document.getElementById(sectionId)?.scrollIntoView({ behavior, block: "start" });
   }, []);
 
   useEffect(() => {
@@ -90,31 +67,22 @@ export function SettingsSectionNav() {
       const hash = window.location.hash.replace("#", "");
       const nextSection = settingsSections.find((section) => section.id === hash)?.id;
       if (nextSection) {
-        scrollSpyLockUntilRef.current = Date.now() + 3600;
+        scrollSpyLockUntilRef.current = Date.now() + 1200;
         setActiveSection(nextSection);
-        let attempts = 0;
-        const scrollHashTarget = () => {
-          setActiveSection(nextSection);
-          scrollToSection(nextSection, "auto");
-          attempts += 1;
-          if (attempts <= 30) window.setTimeout(scrollHashTarget, 100);
-        };
-        window.requestAnimationFrame(scrollHashTarget);
-        window.setTimeout(setActiveFromViewport, 3400);
+        window.requestAnimationFrame(() => scrollToSection(nextSection, "auto"));
+        window.setTimeout(setActiveFromViewport, 260);
       } else {
         setActiveFromViewport();
       }
     };
 
     updateFromHash();
-    const initialHashTimers = [0, 250, 1000].map((delay) => window.setTimeout(updateFromHash, delay));
     window.addEventListener("hashchange", updateFromHash);
     window.addEventListener("scroll", scheduleViewportUpdate, { passive: true });
     window.addEventListener("resize", scheduleViewportUpdate);
 
     return () => {
       window.cancelAnimationFrame(frame);
-      initialHashTimers.forEach((timer) => window.clearTimeout(timer));
       window.removeEventListener("hashchange", updateFromHash);
       window.removeEventListener("scroll", scheduleViewportUpdate);
       window.removeEventListener("resize", scheduleViewportUpdate);
