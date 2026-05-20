@@ -8670,6 +8670,25 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
     padding: 18px 16px 34px;
   }
 
+  .settings-page-topbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .settings-page-topbar .brand {
+    min-width: 0;
+  }
+
+  .settings-page-actions {
+    margin-left: auto;
+  }
+
+  .settings-page-actions .btn {
+    min-height: 42px;
+    padding-inline: 14px;
+  }
+
   .settings-page-layout,
   .settings-page-hero,
   .settings-section {
@@ -8702,6 +8721,10 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
   .settings-page-hero,
   .settings-section {
     padding: 18px;
+  }
+
+  .settings-page-hero h1 {
+    font-size: clamp(3rem, 16vw, 4.2rem);
   }
 
   .settings-hero-status {
