@@ -2404,11 +2404,15 @@ export default function Page() {
     ? targetUrlInfo?.host
       ? `Tailored and exported for ${targetUrlInfo.host}`
       : "Tailored and exported from the current workflow"
-    : (file || uploadMeta)
-      ? "Resume selected · add a target and run the workflow"
-      : "Upload a resume, add a job target, then run the workflow";
+    : (file || uploadMeta) && hasTarget
+      ? "Resume and target ready · run the workflow"
+      : (file || uploadMeta)
+        ? "Resume selected · add a target and run the workflow"
+        : hasTarget
+          ? "Job target ready · upload a resume to continue"
+          : "Upload a resume, add a job target, then run the workflow";
   const topbarLabel = compactLabel(hasTarget ? activeRole : activeResumeName, 36);
-  const heroTitle = result ? activeResumeName : hasTarget ? activeRole : activeResumeName;
+  const heroTitle = activeResumeName;
   const heroLabel = compactLabel(heroTitle, 44);
   const targetLabel = compactLabel(activeRole, 62);
   const atsScore = result?.score_summary?.ats_after ?? result?.fit_score_after?.score ?? score;
