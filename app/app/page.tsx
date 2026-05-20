@@ -1524,6 +1524,7 @@ export default function Page() {
   }
 
   function openPreviewMode(mode: PreviewMode) {
+    clearHistoryHash();
     setPreviewMode(mode);
     setActiveTab(mode === "diff" ? "changes" : "resume");
     window.setTimeout(() => {
@@ -2054,14 +2055,12 @@ export default function Page() {
     setExportNotice(null);
     setCopyState("");
     setAccountPanelOpen(false);
-    setActiveTab("score");
     setSelectedHistoryId(entry.id);
-    setPreviewMode("tailored");
     setRestoredHistoryId(entry.id);
     setHistorySyncState(isAccountHistoryItem(entry, syncedHistoryIds) ? "synced" : "local");
     setHistorySyncMessage(`${entry.filename} is open in the studio`);
     setCopyState(`${entry.filename} restored`);
-    scrollToStudioEditor();
+    openPreviewMode("tailored");
   }
 
   function duplicateCurrentRun() {
