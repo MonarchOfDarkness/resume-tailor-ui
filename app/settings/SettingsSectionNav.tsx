@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { RoleForgeIcon } from "../components/RoleForgeIcons";
 
 const settingsSections = [
@@ -18,6 +18,9 @@ export function SettingsSectionNav() {
   const [activeSection, setActiveSection] = useState<SettingsSectionId>("account");
   const navRef = useRef<HTMLElement | null>(null);
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const scrollToSection = useCallback((sectionId: SettingsSectionId, behavior: ScrollBehavior = "smooth") => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior, block: "start" });
+  }, []);
 
   useEffect(() => {
     let frame = 0;
@@ -49,7 +52,8 @@ export function SettingsSectionNav() {
       const nextSection = settingsSections.find((section) => section.id === hash)?.id;
       if (nextSection) {
         setActiveSection(nextSection);
-        window.setTimeout(setActiveFromViewport, 180);
+        window.requestAnimationFrame(() => scrollToSection(nextSection, "auto"));
+        window.setTimeout(setActiveFromViewport, 260);
       } else {
         setActiveFromViewport();
       }
@@ -66,7 +70,7 @@ export function SettingsSectionNav() {
       window.removeEventListener("scroll", scheduleViewportUpdate);
       window.removeEventListener("resize", scheduleViewportUpdate);
     };
-  }, []);
+  }, [scrollToSection]);
 
   useEffect(() => {
     const nav = navRef.current;
@@ -84,7 +88,12 @@ export function SettingsSectionNav() {
           className={activeSection === section.id ? "active" : ""}
           href={`#${section.id}`}
           key={section.id}
-          onClick={() => setActiveSection(section.id)}
+          onClick={(event) => {
+            event.preventDefault();
+            window.history.pushState(null, "", `#${section.id}`);
+            setActiveSection(section.id);
+            scrollToSection(section.id);
+          }}
           ref={(element) => {
             linkRefs.current[section.id] = element;
           }}
