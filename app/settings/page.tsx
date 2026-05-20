@@ -9,6 +9,7 @@ import { getStripeBillingConfig, PREMIUM_PRICE } from "../lib/billing/stripe";
 import { loadAccountEntitlement } from "../lib/entitlements";
 import { createRoleForgeServerClient } from "../lib/supabase/server";
 import { loadAccountUsage } from "../lib/usage";
+import { SettingsSectionNav } from "./SettingsSectionNav";
 
 type CountResult = { count: number | null; error: unknown };
 type ExportRow = {
@@ -93,13 +94,7 @@ export default async function SettingsPage() {
       </header>
 
       <div className="settings-page-layout">
-        <aside className="settings-page-nav" aria-label="Settings sections">
-          <a className="active" href="#account"><RoleForgeIcon name="settings" size={15} /> Account</a>
-          <a href="#projects"><RoleForgeIcon name="chart" size={15} /> Saved projects</a>
-          <a href="#usage"><RoleForgeIcon name="sparkle" size={15} /> Usage</a>
-          <a href="#exports"><RoleForgeIcon name="download" size={15} /> Exports</a>
-          <a href="#billing"><RoleForgeIcon name="lock" size={15} /> Billing</a>
-        </aside>
+        <SettingsSectionNav />
 
         <section className="settings-page-main">
           <div className="settings-page-hero">

@@ -5223,6 +5223,10 @@ html[data-theme="dark"] input::file-selector-button {
   align-items: center;
 }
 
+.settings-section {
+  scroll-margin-top: 28px;
+}
+
 .settings-hero-status {
   display: grid;
   justify-items: end;
@@ -8448,6 +8452,20 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
 
   .settings-page-nav {
     position: static;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px;
+    scrollbar-width: none;
+  }
+
+  .settings-page-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .settings-page-nav a {
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
 
   .settings-page-hero,
