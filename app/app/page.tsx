@@ -1305,6 +1305,7 @@ export default function Page() {
   const [syncedHistoryIds, setSyncedHistoryIds] = useState<string[]>([]);
   const [restoredHistoryId, setRestoredHistoryId] = useState<string | null>(null);
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
+  const [historyScrollRequest, setHistoryScrollRequest] = useState(0);
   const [historyFilter, setHistoryFilter] = useState<HistoryFilter>("all");
   const [historyExportRequest, setHistoryExportRequest] = useState<{ id: string; format: ExportFormat } | null>(null);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
@@ -1441,8 +1442,13 @@ export default function Page() {
   const openHistoryPanel = useCallback(() => {
     setActiveTab("history");
     setAccountPanelOpen(false);
+    setHistoryScrollRequest((request) => request + 1);
+  }, []);
+
+  useEffect(() => {
+    if (activeTab !== "history" || historyScrollRequest === 0) return;
     scrollToHistoryPanel();
-  }, [scrollToHistoryPanel]);
+  }, [activeTab, historyScrollRequest, scrollToHistoryPanel]);
 
   useEffect(() => {
     function openHashTarget() {
