@@ -18,6 +18,38 @@ type ExportRow = {
   included: string;
   locked: string;
 };
+type SettingsSearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+function getParam(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function billingNotice(value: string | undefined) {
+  switch (value) {
+    case "checkout-success":
+      return {
+        tone: "success",
+        text: "Stripe checkout is complete. Premium access updates as soon as Stripe confirms the subscription.",
+      };
+    case "checkout-canceled":
+      return {
+        tone: "neutral",
+        text: "Checkout was canceled. Your current plan is unchanged.",
+      };
+    case "portal-return":
+      return {
+        tone: "success",
+        text: "Billing details refreshed. Plan changes can take a moment to sync from Stripe.",
+      };
+    case "no-customer":
+      return {
+        tone: "neutral",
+        text: "No Stripe customer is connected yet. Start Premium checkout before opening billing management.",
+      };
+    default:
+      return null;
+  }
+}
 
 function formatPlanDate(value: string | null) {
   if (!value) return "";
@@ -34,7 +66,9 @@ async function countRows(
   return error ? 0 : count ?? 0;
 }
 
-export default async function SettingsPage() {
+export default async function SettingsPage({ searchParams }: { searchParams: SettingsSearchParams }) {
+  const params = await searchParams;
+  const notice = billingNotice(getParam(params.billing));
   const supabase = await createRoleForgeServerClient();
 
   if (!supabase) {
@@ -112,6 +146,13 @@ export default async function SettingsPage() {
               </div>
             </div>
           </div>
+
+          {notice ? (
+            <div className={`settings-billing-alert ${notice.tone}`} role="status">
+              <RoleForgeIcon name={notice.tone === "success" ? "check" : "settings"} size={16} />
+              <span>{notice.text}</span>
+            </div>
+          ) : null}
 
           <section className="settings-section" id="account">
             <div className="settings-section-copy">

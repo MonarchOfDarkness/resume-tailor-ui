@@ -5322,6 +5322,34 @@ html[data-theme="dark"] input::file-selector-button {
   align-items: center;
 }
 
+.settings-billing-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--brand) 30%, var(--line));
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--brand) 10%, transparent), transparent),
+    rgba(255, 253, 248, 0.9);
+  color: var(--ink-1);
+  font-weight: 850;
+  line-height: 1.45;
+  box-shadow: var(--shadow-soft);
+}
+
+.settings-billing-alert.success {
+  border-color: color-mix(in srgb, var(--good) 38%, var(--line));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--good) 13%, transparent), transparent),
+    rgba(255, 253, 248, 0.9);
+}
+
+.settings-billing-alert svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
 .settings-section {
   scroll-margin-top: 28px;
 }
@@ -8237,6 +8265,22 @@ html[data-theme="dark"] .settings-section {
     linear-gradient(180deg, rgba(255, 247, 233, 0.07), rgba(255, 247, 233, 0.035)),
     rgba(15, 20, 35, 0.9);
   border-color: rgba(255, 247, 233, 0.18);
+}
+
+html[data-theme="dark"] .settings-billing-alert {
+  background:
+    linear-gradient(180deg, rgba(222, 162, 79, 0.12), rgba(255, 247, 233, 0.035)),
+    rgba(15, 20, 35, 0.9);
+  border-color: rgba(222, 162, 79, 0.3);
+  color: #fff4da;
+}
+
+html[data-theme="dark"] .settings-billing-alert.success {
+  background:
+    linear-gradient(180deg, rgba(95, 132, 109, 0.18), rgba(255, 247, 233, 0.035)),
+    rgba(15, 20, 35, 0.9);
+  border-color: rgba(146, 191, 160, 0.34);
+  color: #eff8ed;
 }
 
 html[data-theme="dark"] .settings-plan-includes span {

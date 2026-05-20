@@ -6,13 +6,27 @@ import { RoleForgeIcon } from "./components/RoleForgeIcons";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { createRoleForgeServerClient } from "./lib/supabase/server";
 
-async function Nav() {
+type LandingLinks = {
+  signedIn: boolean;
+  studioHref: string;
+  premiumHref: string;
+};
+
+async function getLandingLinks(): Promise<LandingLinks> {
   const supabase = await createRoleForgeServerClient();
   const {
     data: { user },
   } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
   const signedIn = Boolean(user);
 
+  return {
+    signedIn,
+    studioHref: signedIn ? "/app" : "/login?next=/app",
+    premiumHref: signedIn ? "/settings#billing" : `/login?next=${encodeURIComponent("/settings#billing")}`,
+  };
+}
+
+function Nav({ signedIn, studioHref }: Pick<LandingLinks, "signedIn" | "studioHref">) {
   return (
     <header className="nav">
       <div className="nav-inner">
@@ -24,8 +38,8 @@ async function Nav() {
           <a className="nav-link" href="#pricing">Pricing</a>
           <span className="nav-divider" aria-hidden="true" />
           <ThemeToggle />
-          <Link className="nav-link" href={signedIn ? "/app" : "/login?next=/app"}>{signedIn ? "Studio" : "Sign in"}</Link>
-          <Link className="btn btn-brand" href="/login?next=/app">
+          <Link className="nav-link" href={studioHref}>{signedIn ? "Studio" : "Sign in"}</Link>
+          <Link className="btn btn-brand" href={studioHref}>
             Build my resume <RoleForgeIcon name="arrow" size={14} />
           </Link>
         </nav>
@@ -34,7 +48,7 @@ async function Nav() {
   );
 }
 
-function Hero() {
+function Hero({ studioHref }: Pick<LandingLinks, "studioHref">) {
   return (
     <section className="hero">
       <div className="hero-copy">
@@ -51,7 +65,7 @@ function Hero() {
           Upload your resume, add a job target, review structure and keyword signals, then export a cleaner draft from the same guided workspace.
         </p>
         <div className="hero-ctas">
-          <Link className="btn btn-brand btn-lg" href="/login?next=/app">
+          <Link className="btn btn-brand btn-lg" href={studioHref}>
             Build my resume <RoleForgeIcon name="arrow" size={14} />
           </Link>
           <a className="btn btn-ghost btn-lg" href="#how">See how it works</a>
@@ -152,7 +166,7 @@ function HowItWorks() {
   );
 }
 
-function StudioPreview() {
+function StudioPreview({ studioHref }: Pick<LandingLinks, "studioHref">) {
   const navItems = [
     ["doc", "Resume", "Ready"],
     ["target", "Job target", "Set"],
@@ -219,7 +233,7 @@ function StudioPreview() {
                   <h3>Resume studio</h3>
                   <p>Current run · saved project ready</p>
                 </div>
-                <Link className="btn btn-brand btn-sm" href="/login?next=/app"><RoleForgeIcon name="plus" size={14} />New resume</Link>
+                <Link className="btn btn-brand btn-sm" href={studioHref}><RoleForgeIcon name="plus" size={14} />New resume</Link>
               </div>
               <div className="dash-stats">
                 {stats.map(([label, value, delta]) => (
@@ -385,7 +399,7 @@ function Features() {
   );
 }
 
-function Pricing() {
+function Pricing({ studioHref, premiumHref }: Pick<LandingLinks, "studioHref" | "premiumHref">) {
   return (
     <section className="section" id="pricing">
       <div className="section-inner">
@@ -407,7 +421,7 @@ function Pricing() {
               <li><RoleForgeIcon name="check" size={14} />Job description or public URL targeting</li>
               <li><RoleForgeIcon name="check" size={14} />Review tabs for generated results</li>
             </ul>
-            <Link className="btn btn-soft btn-lg" href="/login?next=/app">Open studio</Link>
+            <Link className="btn btn-soft btn-lg" href={studioHref}>Open studio</Link>
           </article>
           <article className="price-card featured">
             <div className="price-name">Premium</div>
@@ -418,7 +432,7 @@ function Pricing() {
               <li><RoleForgeIcon name="check" size={14} />DOCX and TXT exports</li>
               <li><RoleForgeIcon name="check" size={14} />Saved project sync</li>
             </ul>
-            <Link className="btn btn-brand btn-lg" href="/settings#billing">View premium</Link>
+            <Link className="btn btn-brand btn-lg" href={premiumHref}>View premium</Link>
           </article>
         </div>
       </div>
@@ -452,7 +466,7 @@ function FAQ() {
   );
 }
 
-function CTABand() {
+function CTABand({ studioHref }: Pick<LandingLinks, "studioHref">) {
   return (
     <section className="section cta-section" id="final-cta">
       <div className="section-inner">
@@ -462,7 +476,7 @@ function CTABand() {
             <h2>Stop tailoring by hand. <em>Start</em> applying with clarity.</h2>
             <p>Free to start. No credit card required. Upload your resume, target the role, and review a cleaner draft.</p>
             <div className="cta-cluster">
-              <Link className="btn btn-brand btn-lg" href="/login?next=/app">Build my resume <RoleForgeIcon name="arrow" size={14} /></Link>
+              <Link className="btn btn-brand btn-lg" href={studioHref}>Build my resume <RoleForgeIcon name="arrow" size={14} /></Link>
               <a className="btn btn-ghost btn-lg" href="#templates">Browse templates</a>
             </div>
           </div>
@@ -505,19 +519,21 @@ function Footer() {
   );
 }
 
-export default function Landing() {
+export default async function Landing() {
+  const links = await getLandingLinks();
+
   return (
     <main className="page-shell">
-      <Nav />
-      <Hero />
+      <Nav signedIn={links.signedIn} studioHref={links.studioHref} />
+      <Hero studioHref={links.studioHref} />
       <RoleStrip />
       <HowItWorks />
-      <StudioPreview />
+      <StudioPreview studioHref={links.studioHref} />
       <Templates />
       <Features />
-      <Pricing />
+      <Pricing studioHref={links.studioHref} premiumHref={links.premiumHref} />
       <FAQ />
-      <CTABand />
+      <CTABand studioHref={links.studioHref} />
       <Footer />
     </main>
   );
