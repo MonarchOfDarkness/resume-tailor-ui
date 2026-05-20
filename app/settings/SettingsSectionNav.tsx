@@ -18,6 +18,7 @@ export function SettingsSectionNav() {
   const [activeSection, setActiveSection] = useState<SettingsSectionId>("account");
   const navRef = useRef<HTMLElement | null>(null);
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const scrollSpyLockUntilRef = useRef(0);
   const scrollToSection = useCallback((sectionId: SettingsSectionId, behavior: ScrollBehavior = "smooth") => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior, block: "start" });
   }, []);
@@ -26,6 +27,8 @@ export function SettingsSectionNav() {
     let frame = 0;
 
     const setActiveFromViewport = () => {
+      if (Date.now() < scrollSpyLockUntilRef.current) return;
+
       const viewportOffset = 150;
       const sectionRects = settingsSections
         .map((section) => {
@@ -33,11 +36,18 @@ export function SettingsSectionNav() {
           return element ? { id: section.id, rect: element.getBoundingClientRect() } : null;
         })
         .filter((section): section is SettingsSectionRect => Boolean(section));
+      const visibleSections = sectionRects.filter(
+        (section) => section.rect.bottom > 0 && section.rect.top < window.innerHeight,
+      );
+      const isNearPageEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8;
 
       const current =
-        sectionRects.find((section) => section.rect.top <= viewportOffset && section.rect.bottom > viewportOffset)?.id ??
-        sectionRects.find((section) => section.rect.top > viewportOffset)?.id ??
-        "billing";
+        isNearPageEnd && visibleSections.length > 0
+          ? visibleSections[visibleSections.length - 1].id
+          : sectionRects.find((section) => section.rect.top <= viewportOffset && section.rect.bottom > viewportOffset)
+              ?.id ??
+            sectionRects.find((section) => section.rect.top > viewportOffset)?.id ??
+            "billing";
 
       setActiveSection(current);
     };
@@ -51,6 +61,7 @@ export function SettingsSectionNav() {
       const hash = window.location.hash.replace("#", "");
       const nextSection = settingsSections.find((section) => section.id === hash)?.id;
       if (nextSection) {
+        scrollSpyLockUntilRef.current = Date.now() + 900;
         setActiveSection(nextSection);
         window.requestAnimationFrame(() => scrollToSection(nextSection, "auto"));
         window.setTimeout(setActiveFromViewport, 260);
@@ -91,6 +102,7 @@ export function SettingsSectionNav() {
           onClick={(event) => {
             event.preventDefault();
             window.history.pushState(null, "", `#${section.id}`);
+            scrollSpyLockUntilRef.current = Date.now() + 900;
             setActiveSection(section.id);
             scrollToSection(section.id);
           }}
