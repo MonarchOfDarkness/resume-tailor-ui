@@ -2111,11 +2111,29 @@ export default function Page() {
   }
 
   function clearLocalHistory() {
+    const removableCount = signedIn
+      ? history.filter((entry) => !isAccountHistoryItem(entry, syncedHistoryIds)).length
+      : history.length;
+
+    if (!removableCount) return;
+
+    const runLabel = `${removableCount} browser run${removableCount === 1 ? "" : "s"}`;
+    const confirmed = window.confirm(
+      signedIn
+        ? `Clear ${runLabel}? Saved account projects will stay available.`
+        : `Clear ${runLabel}? This cannot be undone.`,
+    );
+
+    if (!confirmed) return;
+
     const next = signedIn ? history.filter((entry) => isAccountHistoryItem(entry, syncedHistoryIds)) : [];
     setHistory(next);
     saveHistory(next);
     setRestoredHistoryId((current) => (current && next.some((entry) => entry.id === current) ? current : null));
     setSelectedHistoryId((current) => (current && next.some((entry) => entry.id === current) ? current : null));
+    setProjectActionMessage("");
+    setHistorySyncState(signedIn ? "synced" : "local");
+    setHistorySyncMessage(signedIn ? `Cleared ${runLabel}. Account projects are still saved.` : `Cleared ${runLabel}.`);
   }
 
   function startRenameProject(entry: HistoryItem) {
