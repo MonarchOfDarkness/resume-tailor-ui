@@ -3623,9 +3623,9 @@ html[data-theme="dark"] .result-box {
 }
 
 .history-sync-badge.open {
-  border-color: color-mix(in srgb, var(--danger) 34%, var(--line));
-  background: color-mix(in srgb, var(--danger) 10%, var(--surface));
-  color: var(--danger);
+  border-color: color-mix(in srgb, var(--brand) 38%, var(--line));
+  background: color-mix(in srgb, var(--brand) 11%, var(--surface));
+  color: var(--brand-strong);
 }
 
 .history-project-facts {
@@ -8561,8 +8561,8 @@ html[data-theme="dark"] .history-selected-run small {
 }
 
 html[data-theme="dark"] .history-item.active {
-  border-color: rgba(237, 127, 105, 0.38);
-  background: rgba(237, 127, 105, 0.12);
+  border-color: rgba(231, 188, 111, 0.34);
+  background: rgba(231, 188, 111, 0.09);
 }
 
 html[data-theme="dark"] .history-item.selected {
