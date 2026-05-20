@@ -1186,6 +1186,26 @@ function formatResetDate(value: string) {
   return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+function scrollDocumentTo(top: number, behavior: ScrollBehavior) {
+  const nextTop = Math.max(0, top);
+  const fallback = () => {
+    document.documentElement.scrollTop = nextTop;
+    document.body.scrollTop = nextTop;
+  };
+
+  if (typeof window.scrollTo === "function") {
+    window.scrollTo({ top: nextTop, behavior });
+  } else {
+    fallback();
+  }
+
+  if (behavior !== "auto") {
+    window.setTimeout(() => {
+      if (Math.abs(window.scrollY - nextTop) > 48) fallback();
+    }, 180);
+  }
+}
+
 function formatDelta(value: number | undefined) {
   if (!value) return "0";
   return value > 0 ? `+${value}` : `${value}`;
@@ -1408,7 +1428,9 @@ export default function Page() {
     const scrollWhenReady = () => {
       const target = historySectionRef.current;
       if (target) {
-        target.scrollIntoView({ behavior: attempts === 0 ? behavior : "auto", block: "start" });
+        const marginTop = window.matchMedia("(max-width: 1180px)").matches ? 24 : 128;
+        const targetTop = target.getBoundingClientRect().top + window.scrollY - marginTop;
+        scrollDocumentTo(targetTop, attempts === 0 ? behavior : "auto");
       }
 
       attempts += 1;
@@ -1426,7 +1448,9 @@ export default function Page() {
       const target = historyDetailRef.current;
       if (target) {
         const compact = window.matchMedia("(max-width: 900px)").matches;
-        target.scrollIntoView({ behavior: attempts === 0 ? behavior : "auto", block: compact ? "start" : "center" });
+        const viewportOffset = compact ? 24 : Math.max(96, (window.innerHeight - target.offsetHeight) / 2);
+        const targetTop = target.getBoundingClientRect().top + window.scrollY - viewportOffset;
+        scrollDocumentTo(targetTop, attempts === 0 ? behavior : "auto");
         target.focus({ preventScroll: true });
       }
 
