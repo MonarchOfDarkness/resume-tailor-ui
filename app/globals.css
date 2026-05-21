@@ -8787,6 +8787,37 @@ html[data-theme="dark"] .studio-account-form input::placeholder {
   .settings-plan-includes {
     justify-content: flex-start;
   }
+
+  .history-content-grid.has-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .history-content-grid.has-detail .history-detail-panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .history-item {
+    grid-template-columns: 1fr;
+  }
+
+  .history-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+    width: 100%;
+    max-width: none;
+    justify-content: stretch;
+  }
+
+  .history-actions .ghost-button,
+  .history-actions .btn {
+    width: 100%;
+  }
+
+  .history-action-download {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 760px) {
