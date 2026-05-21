@@ -1590,6 +1590,11 @@ export default function Page() {
     scrollToHistoryDetails();
   }
 
+  function closeHistoryDetails() {
+    setSelectedHistoryId(null);
+    setProjectActionMessage("");
+  }
+
   function clearHistoryHash() {
     if (window.location.hash !== "#history") return;
     window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
@@ -3460,8 +3465,14 @@ export default function Page() {
                                 )}
                               </>
                             ) : null}
-                            <button className="ghost-button history-action-details" type="button" onClick={() => openHistoryDetails(entry)} aria-pressed={selected} aria-label={`Show details for ${entry.filename}`}>
-                              Details <RoleForgeIcon name="doc" size={14} />
+                            <button
+                              className="ghost-button history-action-details"
+                              type="button"
+                              onClick={() => (selected ? closeHistoryDetails() : openHistoryDetails(entry))}
+                              aria-pressed={selected}
+                              aria-label={selected ? `Hide details for ${entry.filename}` : `Show details for ${entry.filename}`}
+                            >
+                              {selected ? "Hide" : "Details"} <RoleForgeIcon name="doc" size={14} />
                             </button>
                             <button
                               className="ghost-button history-action-restore"
