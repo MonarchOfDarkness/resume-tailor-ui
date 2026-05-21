@@ -2511,37 +2511,43 @@ export default function Page() {
   const previewStatusItems =
     previewMode === "original"
       ? [
-          hasSourcePreview
-            ? `${sourceLineCount || 1} source line${sourceLineCount === 1 ? "" : "s"} extracted`
-            : previewUploadState === "reading"
-              ? "Reading source document"
-              : previewUploadState === "error"
-                ? "Source preview needs another try"
-                : sourcePreviewUnavailable
-                  ? "Source preview unavailable"
-                  : restoredSourceMissing
-                    ? "Original source was not saved"
-                  : "Upload a resume to see the original",
-          uploadMeta?.filename ?? file?.name ?? "No source file selected",
-          restoredRunOpen ? (hasSourcePreview ? "Restored run source" : "Tailored draft restored") : "Before AI edits",
+          {
+            label: "Source",
+            value: hasSourcePreview
+              ? `${sourceLineCount || 1} source line${sourceLineCount === 1 ? "" : "s"} extracted`
+              : previewUploadState === "reading"
+                ? "Reading source document"
+                : previewUploadState === "error"
+                  ? "Source preview needs another try"
+                  : sourcePreviewUnavailable
+                    ? "Source preview unavailable"
+                    : restoredSourceMissing
+                      ? "Original source was not saved"
+                    : "Upload a resume to see the original",
+          },
+          { label: "File", value: uploadMeta?.filename ?? file?.name ?? "No source file selected" },
+          { label: "State", value: restoredRunOpen ? (hasSourcePreview ? "Restored run source" : "Tailored draft restored") : "Before AI edits" },
         ]
       : previewMode === "diff"
         ? [
-            hasSourcePreview ? "Original side ready" : restoredSourceMissing ? "Original side not saved" : "Original side waiting",
-            hasTailoredPreview ? "Tailored side ready" : "Tailored side waiting",
-            result?.change_log?.length ? `${result.change_log.length} change note${result.change_log.length === 1 ? "" : "s"}` : "Change notes appear after a run",
+            { label: "Original", value: hasSourcePreview ? "Original side ready" : restoredSourceMissing ? "Original side not saved" : "Original side waiting" },
+            { label: "Tailored", value: hasTailoredPreview ? "Tailored side ready" : "Tailored side waiting" },
+            { label: "Notes", value: result?.change_log?.length ? `${result.change_log.length} change note${result.change_log.length === 1 ? "" : "s"}` : "Change notes appear after a run" },
           ]
         : [
-            hasTailoredPreview
-              ? `${tailoredLineCount || 1} tailored line${tailoredLineCount === 1 ? "" : "s"} generated`
-              : stage === "tailoring"
-                ? "Tailored draft is generating"
-                : "Run Tailor to generate a draft",
-            keywordTotal ? `${presentKeywords.length}/${keywordTotal} keywords matched` : "Keywords pending",
-            restoredRunOpen ? "Saved run open" : downloadReady ? `${downloadFormat.toUpperCase()} export ready` : "Review before export",
+            {
+              label: "Draft",
+              value: hasTailoredPreview
+                ? `${tailoredLineCount || 1} tailored line${tailoredLineCount === 1 ? "" : "s"} generated`
+                : stage === "tailoring"
+                  ? "Tailored draft is generating"
+                  : "Run Tailor to generate a draft",
+            },
+            { label: "Keywords", value: keywordTotal ? `${presentKeywords.length}/${keywordTotal} keywords matched` : "Keywords pending" },
+            { label: "Export", value: restoredRunOpen ? "Saved run open" : downloadReady ? `${downloadFormat.toUpperCase()} export ready` : "Review before export" },
           ];
-  const previewStatusTone = (item: string, index: number) => {
-    const normalized = item.toLowerCase();
+  const previewStatusTone = (value: string, index: number) => {
+    const normalized = value.toLowerCase();
     return (previewUploadState === "error" && previewMode === "original" && index === 0) ||
       normalized.includes("waiting") ||
       normalized.includes("pending") ||
@@ -2998,8 +3004,9 @@ export default function Page() {
                 >
                   <div className="rf-preview-status" aria-label="Preview status">
                     {previewStatusItems.map((item, index) => (
-                      <span className={previewStatusTone(item, index)} key={`${item}-${index}`}>
-                        {item}
+                      <span className={previewStatusTone(item.value, index)} key={`${item.label}-${item.value}`}>
+                        <strong>{item.label}</strong>
+                        {item.value}
                       </span>
                     ))}
                   </div>

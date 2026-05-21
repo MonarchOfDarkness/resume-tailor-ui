@@ -6217,25 +6217,38 @@ html[data-theme="dark"] input::file-selector-button {
 }
 
 .rf-preview-status {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+  align-items: stretch;
   gap: 8px;
-  flex-wrap: wrap;
   margin: 0 0 14px;
 }
 
 .rf-preview-status span,
 .rf-preview-alert {
-  display: inline-flex;
-  align-items: center;
+  display: grid;
+  align-items: start;
+  gap: 3px;
+  min-width: 0;
   min-height: 30px;
   padding: 6px 10px;
   border: 1px solid color-mix(in srgb, var(--brand) 28%, var(--line));
-  border-radius: 999px;
+  border-radius: 12px;
   background: color-mix(in srgb, var(--brand) 8%, #fff);
   color: var(--brand-strong);
   font-size: 0.78rem;
   font-weight: 850;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.rf-preview-status strong {
+  color: color-mix(in srgb, var(--brand-strong) 72%, #6f6a78);
+  font-size: 0.64rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .rf-preview-status span.warn,
@@ -6959,6 +6972,10 @@ html[data-theme="dark"] .rf-preview-status span {
   border-color: rgba(137, 209, 190, 0.34);
   background: rgba(137, 209, 190, 0.12);
   color: #c8f0df;
+}
+
+html[data-theme="dark"] .rf-preview-status strong {
+  color: rgba(245, 238, 220, 0.68);
 }
 
 html[data-theme="dark"] .rf-preview-status span.warn,
